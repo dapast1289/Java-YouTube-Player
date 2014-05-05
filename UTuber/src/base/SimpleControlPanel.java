@@ -18,7 +18,7 @@ import javax.swing.JSlider;
 
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
-public class BetterControlPanel extends JPanel {
+public class SimpleControlPanel extends JPanel {
 
 	private static final long serialVersionUID = 6659194932504554526L;
 	private final EmbeddedMediaPlayer mediaPlayer;
@@ -34,7 +34,7 @@ public class BetterControlPanel extends JPanel {
 		new GUI_Main();
 	}
 	
-	public BetterControlPanel(EmbeddedMediaPlayer mp) {
+	public SimpleControlPanel(EmbeddedMediaPlayer mp) {
 		super();
 		mediaPlayer = mp;
 		positionSlider = new JSlider(0, 10000);

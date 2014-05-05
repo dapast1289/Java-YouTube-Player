@@ -90,7 +90,7 @@ public class GUI_Main {
 
 		player = new VLCMediaPlayer();
 		
-		BetterControlPanel controlPanel = new BetterControlPanel(player.getMediaPlayer());
+		SimpleControlPanel controlPanel = new SimpleControlPanel(player.getMediaPlayer());
 
 		jf.add(sPanel, BorderLayout.NORTH);
 		jf.add(player, BorderLayout.CENTER);
