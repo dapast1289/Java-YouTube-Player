@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class VidPage {
 	
-	ArrayList<VideoStream> array;
+	ArrayList<MediaStream> array;
 	String playerURL;
-	public ArrayList<VideoStream> getArray() {
+	public ArrayList<MediaStream> getArray() {
 		return array;
 	}
-	public void setArray(ArrayList<VideoStream> array) {
+	public void setArray(ArrayList<MediaStream> array) {
 		this.array = array;
 	}
 	public String getPlayerURL() {
@@ -22,7 +22,7 @@ public class VidPage {
 	public String toString() {
 		return "VidPage [array=" + array + ", playerURL=" + playerURL + "]";
 	}
-	public VidPage(ArrayList<VideoStream> array, String playerURL) {
+	public VidPage(ArrayList<MediaStream> array, String playerURL) {
 		super();
 		this.array = array;
 		this.playerURL = playerURL;
@@ -40,5 +40,30 @@ public class VidPage {
 		return url + "&signature=" + decryptedSig;
 	}
 	
+	public String getDecodedStream(MediaStream ms) {
+		String url = ms.getUrl();
+		if (url.contains("signature=")){
+			return url;
+		}
+		String decryptedSig = Extractor.decodeSignature(ms.getSig(), playerURL);
+		if (decryptedSig == null) {
+			return url;
+		}
+		return url + "&signature=" + decryptedSig;
+	}
+	
+	public String getAudioStream() {
+		for (MediaStream ms : array) {
+			if (ms.getType().startsWith("audio")) {
+				return getDecodedStream(ms);
+			}
+		}
+		System.err.println("Could not find suitable audio stream");
+		return getDecodedStream(0);
+	}
+	
+	public void add(MediaStream ms) {
+		array.add(ms);
+	}
 	
 }
