@@ -43,15 +43,44 @@ public class SidePanel extends JScrollPane {
 								int index = jlist.getSelectedIndex();
 								if (index != -1 && index != lastSelectedIndex) {
 									if (array.get(index)[0] != null) {
-										GUI_Main.play(Extractor.extract(array.get(index)[0],array.get(index)[1]).getDecodedStream(0));
+										if (GUI_Main.preferAudio()) {
+											GUI_Main.play(Extractor.extractFmt(
+													array.get(index)[0],
+													array.get(index)[1])
+													.getAudioStream());
+										} else {
+											GUI_Main.play(Extractor.extract(
+													array.get(index)[0],
+													array.get(index)[1])
+													.getDecodedStream(0));
+										}
 										lastSelectedIndex = index;
-									} else  if (array.get(index)[1] != null) {
-										System.out.println("playing: " + Utubr.Search(array.get(index)[1]).get(0)[0]);
-										GUI_Main.play(Extractor.extract(Utubr.Search(array.get(index)[1]).get(0)[0],array.get(index)[1]).getDecodedStream(0));
+									} else if (array.get(index)[1] != null) {
+										System.out.println("playing: "
+												+ Utubr.Search(
+														array.get(index)[1])
+														.get(0)[0]);
+
+										if (GUI_Main.preferAudio()) {
+											GUI_Main.play(Extractor
+													.extractFmt(
+															Utubr.Search(
+																	array.get(index)[1])
+																	.get(0)[0],
+															array.get(index)[1])
+													.getAudioStream());
+										} else {
+											GUI_Main.play(Extractor
+													.extract(
+															Utubr.Search(
+																	array.get(index)[1])
+																	.get(0)[0],
+															array.get(index)[1])
+													.getDecodedStream(0));
+										}
 										lastSelectedIndex = index;
-										
+
 									}
-									
 								}
 
 							}

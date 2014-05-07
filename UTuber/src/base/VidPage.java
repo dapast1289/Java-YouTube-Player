@@ -33,7 +33,7 @@ public class VidPage {
 		if (url.contains("signature=")){
 			return url;
 		}
-		String decryptedSig = Extractor.decodeSignature(array.get(n).getSig(), playerURL);
+		String decryptedSig = Extractor.decryptSignature(array.get(n).getSig(), playerURL);
 		if (decryptedSig == null) {
 			return url;
 		}
@@ -45,7 +45,7 @@ public class VidPage {
 		if (url.contains("signature=")){
 			return url;
 		}
-		String decryptedSig = Extractor.decodeSignature(ms.getSig(), playerURL);
+		String decryptedSig = Extractor.decryptSignature(ms.getSig(), playerURL);
 		if (decryptedSig == null) {
 			return url;
 		}

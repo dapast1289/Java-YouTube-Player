@@ -27,7 +27,6 @@ public class Utubr {
 		try {
 			Scraper(new URL("https://www.youtube.com/watch?v=Ij9Yce-n1LQ"));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -61,8 +60,8 @@ public class Utubr {
 				if (vidMatcher.find()) {
 					tubelinkAfter = vidMatcher.group(1);
 					title = vidMatcher.group(2);
-					System.out.println("https://www.youtube.com/watch?"
-							+ tubelinkAfter + "\n");
+//					System.out.println("https://www.youtube.com/watch?"
+//							+ tubelinkAfter + "\n");
 					if (!tubelinkAfter.isEmpty() && !title.isEmpty())
 						try {
 							array.add(new String[] {
@@ -129,41 +128,7 @@ public class Utubr {
 						// System.out.println("head: " + urlHead);
 						String urlTail = urlParts[1].substring(0,
 								urlParts[1].length() - 1);
-						// urlTail = URLDecoder.decode(urlTail, "UTF-8");
-						// urlTail = URLDecoder.decode(urlTail,
-						// "UTF-8").replaceAll("\\\\u0026", "&");
 						urlTail = urlTail.replaceAll("\\\\u0026", "&");
-						// if (urlTail.contains("type")) {
-						// type = urlTail.split("type")[1];
-						// // System.out.println("Type: " + type);
-						// }
-						// if (urlTail.contains(",type")) {
-						// urlTail = urlTail.replace(",type", "&type");
-						// }
-						// if (urlTail.contains(",init")) {
-						// urlTail = urlTail.replace(",init", "&init");
-						// }
-						// if (urlTail.contains(",index")) {
-						// urlTail = urlTail.replace(",index", "&index");
-						// }
-						// if (urlTail.contains(",quality")) {
-						// urlTail = urlTail.replace(",quality", "&quality");
-						// }
-						// if (urlTail.contains("&sver")) {
-						// urlTail = urlTail.split("&sver=[0-9]&")[0] +
-						// urlTail.split("&sver=[0-9]&")[1];
-						// }
-						// if (urlTail.contains("itag=")) {
-						// System.out.println("contains");
-						// while
-						// (urlTail.matches(".*itag=[0-9]{1,4}\\W.*itag=[0-9]{1,4}\\W.*"))
-						// {
-						// System.out.println(urlTail);
-						// urlTail = (urlTail.replaceFirst("itag=[0-9]{1,4}\\W",
-						// ""));
-						// System.out.println("cut off  ");
-						// }
-						// }
 						urlFinal = urlHead + urlTail;
 						System.out.println(urlFinal);
 

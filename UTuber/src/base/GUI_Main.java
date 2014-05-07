@@ -14,7 +14,9 @@ import javafx.embed.swing.JFXPanel;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -33,6 +35,7 @@ public class GUI_Main {
 	static JPanel sPanel;
 	static VLCMediaPlayer player;
 	static SidePanel sidepanel;
+	static JCheckBox jcb;
 
 	public GUI_Main() {
 		try {
@@ -41,7 +44,7 @@ public class GUI_Main {
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-
+		
 		JFXPanel jp = new JFXPanel();
 		jp.setVisible(true);
 
@@ -79,7 +82,13 @@ public class GUI_Main {
 			public void keyReleased(KeyEvent e) {
 			}
 		});
+		
+		JLabel preferAudioLabel = new JLabel("Prefer Audio");
+		jcb = new JCheckBox();
 
+		
+		sPanel.add(preferAudioLabel);
+		sPanel.add(jcb);
 		sPanel.add(sBar);
 		sPanel.add(sButton);
 
@@ -110,6 +119,10 @@ public class GUI_Main {
 
 	public static String getSearch() {
 		return sBar.getText();
+	}
+	
+	public static boolean preferAudio() {
+		return jcb.isSelected();
 	}
 
 	public static void searchAction() {
