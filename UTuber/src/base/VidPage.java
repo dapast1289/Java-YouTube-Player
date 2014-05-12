@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class VidPage {
 	
@@ -20,7 +21,7 @@ public class VidPage {
 	}
 	@Override
 	public String toString() {
-		return "VidPage [array=" + array + ", playerURL=" + playerURL + "]";
+		return "VidPage [array=" + Arrays.deepToString(array.toArray()) + ", playerURL=" + playerURL + "]";
 	}
 	public VidPage(ArrayList<MediaStream> array, String playerURL) {
 		super();
@@ -62,8 +63,46 @@ public class VidPage {
 		return getDecodedStream(0);
 	}
 	
+	public MediaStream getAudioMS() {
+		for (MediaStream ms : array) {
+			if (ms.getType().startsWith("audio")) {
+				return ms;
+			}
+		}
+		System.err.println("Could not find suitable audio stream");
+		return array.get(0);
+	}
+	
 	public void add(MediaStream ms) {
 		array.add(ms);
+	}
+	
+	public String getSmall() {
+		for (MediaStream ms : array) {
+			if (ms.getQuality().startsWith("small")) {
+				return getDecodedStream(ms);
+			}
+		}
+		for (MediaStream ms : array) {
+			if (ms.getQuality().startsWith("medium")) {
+				return getDecodedStream(ms);
+			}
+		}
+		return getDecodedStream(array.get(0));
+	}
+	
+	public MediaStream getSmallMS() {
+		for (MediaStream ms : array) {
+			if (ms.getQuality().startsWith("small")) {
+				return (ms);
+			}
+		}
+		for (MediaStream ms : array) {
+			if (ms.getQuality().startsWith("medium")) {
+				return (ms);
+			}
+		}
+		return (array.get(0));
 	}
 	
 }

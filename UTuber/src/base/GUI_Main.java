@@ -114,6 +114,7 @@ public class GUI_Main {
 	}
 
 	public static void play(String media) {
+		System.out.println("playing " + media );
 		player.play(media);
 	}
 

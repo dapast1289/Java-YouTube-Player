@@ -2,6 +2,7 @@ package base;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,8 +21,6 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import com.sun.org.apache.bcel.internal.classfile.Field;
-
 public class Extractor {
 
 	final static String fmt = "A\", \"url_encoded_fmt_stream_map\": \"type=vi\"";
@@ -27,9 +28,28 @@ public class Extractor {
 	static Long time;
 
 	public static void main(String[] args) {
-		String[] searched = Utubr.Search("like the way you lie").get(0);
+		System.out.println(downloadSearchAudio("").toURI());
+
+	}
+
+	public static File downloadSearchAudio(String s) {
+		String[] searched = Utubr.Search(s).get(0);
 		VidPage vp = extractFmt(searched[0], searched[1]);
-		System.out.println(vp.getAudioStream());
+
+		System.out.println("type: " + vp.getAudioMS().getType());
+		File downloadedFile = download(vp.getAudioStream(), searched[1]
+				+ ".mp3");
+		return downloadedFile;
+	}
+
+	public static File downloadSearchVideo(String s) {
+		String[] searched = Utubr.Search(s).get(0);
+		VidPage vp = extract(searched[0], searched[1]);
+		System.out.println(vp.toString());
+		System.out.println("type: " + vp.getSmallMS().getType());
+		String name = searched[1] + ".mp4";
+		File downloadedFile = download(vp.getSmall(), name);
+		return downloadedFile;
 	}
 
 	public static void stopwatch() {
@@ -39,6 +59,24 @@ public class Extractor {
 		}
 		System.out.println(System.currentTimeMillis() - time);
 		time = null;
+	}
+
+	public static File download(String urlString, String filename) {
+		try {
+			URL url = new URL(urlString);
+			System.out.println(urlString);
+			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+			new File("download").mkdir();
+			File file = new File("download/" + filename);
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+			fos.close();
+			return file;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	public static VidPage extractFmt(String urlString, String title) {
@@ -114,30 +152,33 @@ public class Extractor {
 	}
 
 	public static String decryptSignature(String sig, String playerURLString) {
-		
+
+		System.out.println("decrypting: " + sig + " - " + playerURLString);
+
 		if (sig == null) {
 			return null;
 		}
-		
-		System.out.println(playerURLString);
-		
-		String playerID = playerURLString.substring(playerURLString.lastIndexOf('/') + 1);
-		
-		System.out.println("PlayerID: " + playerID);
-		
+
+//		System.out.println(playerURLString);
+
+		String playerID = playerURLString.substring(playerURLString
+				.lastIndexOf('/') + 1);
+
+//		System.out.println("PlayerID: " + playerID);
+
 		File cacheFile = new File("cache/" + playerID);
-		
-		
+
 		ScriptEngine se = null;
 		Invocable inv = null;
 		String actualMethod = "";
 		String methodName = "";
-		
-		
+
 		if (cacheFile.exists()) {
+			System.out.println("cache found: " + playerID);
 			String cacheMethod = "";
 			try {
-				BufferedReader fr = new BufferedReader(new  FileReader(cacheFile));
+				BufferedReader fr = new BufferedReader(
+						new FileReader(cacheFile));
 				cacheMethod = fr.readLine();
 				methodName = fr.readLine();
 				fr.close();
@@ -145,54 +186,55 @@ public class Extractor {
 				inv = (Invocable) se;
 				se.eval(cacheMethod);
 				System.out.println(methodName + " in " + cacheMethod);
-				String decryptedSig = (String) inv.invokeFunction(methodName, sig);
+				String decryptedSig = (String) inv.invokeFunction(methodName,
+						sig);
 				return decryptedSig;
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		
+
+		System.out.println("cache not found:" + playerID);
+
 		String playerPage = "";
 		try {
-			 System.out.println("signature: " + sig);
+//			System.out.println("signature: " + sig);
 			URL pURL = new URL(playerURLString);
 			playerPage = urlToString(pURL);
 			int methodNamePostion = playerPage.indexOf("signature=") + 10;
-			methodName = playerPage.substring(methodNamePostion, methodNamePostion + 2);
-			 System.out.println("Signature method name= " + methodName);
+			methodName = playerPage.substring(methodNamePostion,
+					methodNamePostion + 2);
+//			System.out.println("Signature method name= " + methodName);
 
 			int methodPostion = playerPage.indexOf("function " + methodName);
 			actualMethod = playerPage.substring(methodPostion);
 			actualMethod = actualMethod.split("}")[0] + "};";
-			 System.out.println(actualMethod);
+//			System.out.println(actualMethod);
 
 			se = new ScriptEngineManager().getEngineByName("javascript");
 			inv = (Invocable) se;
 			se.eval(actualMethod);
-			 System.out.println(methodName + " - " + actualMethod);
+//			System.out.println(methodName + " - " + actualMethod);
 			String decryptedSig = (String) inv.invokeFunction(methodName, sig);
 			writeMethod(actualMethod, methodName, playerID);
+//			System.out.println("returning: " + decryptedSig);
 			return decryptedSig;
 
 		} catch (Exception e) {
 			String errormessage = e.getMessage();
-			if (errormessage.startsWith("ReferenceError")) {
-				 System.out.println("ReferenceError: " + errormessage);
+			if (errormessage.contains("ReferenceError")) {
 				String newMethodName = errormessage.split("\"")[1];
-
-				int methodPosition = playerPage.indexOf("function " + newMethodName);
-				String newActualMethod = playerPage.substring(methodPosition);
-				newActualMethod = newActualMethod.split("}")[0] + "};";
-				System.out.println(newActualMethod);
+//				System.out.println("trying moar for " + newMethodName);
+				
+				String newActualMethod = getMethodFromPage(newMethodName, playerPage);
+//				System.out.println(newActualMethod);
 
 				try {
 					actualMethod = actualMethod + newActualMethod;
 					se.eval(actualMethod + newActualMethod);
-					 System.out.println(newMethodName + " - " +
-					 actualMethod);
+//					System.out.println(newMethodName + " - " + actualMethod);
 					String decryptedSig = (String) inv.invokeFunction(
 							methodName, sig);
 					writeMethod(actualMethod, methodName, playerID);
@@ -207,7 +249,15 @@ public class Extractor {
 		return null;
 	}
 	
-	public static void writeMethod(String actualMethod, String methodName, String playerID) {
+	public static String getMethodFromPage(String methodName, String playerPage) {
+		int methodPostion = playerPage.indexOf("function " + methodName);
+		String actualMethod = playerPage.substring(methodPostion);
+		actualMethod = actualMethod.split("}")[0] + "};";
+		return actualMethod;
+	}
+
+	public static void writeMethod(String actualMethod, String methodName,
+			String playerID) {
 		File cacheFolder = new File("cache");
 		File cacheFile = new File("cache/" + playerID);
 		try {
@@ -219,7 +269,7 @@ public class Extractor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public static VidPage extract(String urlString, String title) {
@@ -257,7 +307,7 @@ public class Extractor {
 					try {
 						tempurl = URLDecoder.decode(string.split("url=")[1],
 								"UTF-8");
-						if (!tempurl.contains("&ratebypass=yes")) {
+						if (!tempurl.contains("ratebypass")) {
 							tempurl += "&ratebypass=yes";
 						}
 						if (!tempurl.contains("&title=")) {

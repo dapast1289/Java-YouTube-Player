@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -20,15 +20,16 @@ import javafx.scene.media.MediaPlayer;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 public class Utubr {
 
-	public static void main(String[] args) {
-		Search("r3hab");
-		try {
-			Scraper(new URL("https://www.youtube.com/watch?v=Ij9Yce-n1LQ"));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+	public static void main(String[] args) throws UnsupportedEncodingException {
+		String s = "R3hab &amp; NERVO &amp; Ummet Ozcan - Revolution (Official Music Video)";
+		s = StringEscapeUtils.unescapeHtml4(s);
+		System.out.println(s);
+
+		Utubr.Search("r3hab");
 	}
 
 	static Media media;
@@ -60,21 +61,13 @@ public class Utubr {
 				if (vidMatcher.find()) {
 					tubelinkAfter = vidMatcher.group(1);
 					title = vidMatcher.group(2);
-//					System.out.println("https://www.youtube.com/watch?"
-//							+ tubelinkAfter + "\n");
+					// System.out.println("https://www.youtube.com/watch?"
+					// + tubelinkAfter + "\n");
 					if (!tubelinkAfter.isEmpty() && !title.isEmpty())
-						try {
-							array.add(new String[] {
-									"https://www.youtube.com/watch?"
-											+ tubelinkAfter,
-									URLDecoder.decode(title, "UTF-8") });
-						} catch (Exception e) {
-							System.out.println("decode failed at " + title);
-							array.add(new String[] {
-									"https://www.youtube.com/watch?"
-											+ tubelinkAfter, title });
-						}
 
+					array.add(new String[] {
+							"https://www.youtube.com/watch?" + tubelinkAfter,
+							StringEscapeUtils.unescapeHtml4(title) });
 				}
 			}
 			return array;
@@ -102,8 +95,9 @@ public class Utubr {
 			Matcher gvidMatcher = gvidPattern.matcher(s);
 			while ((s = in.readLine()) != null) {
 				if (s.matches("<title>.*</title>.*")) {
-					title = URLDecoder.decode(
-							s.split("<title>")[1].split("</title")[0], "UTF-8");
+					title = StringEscapeUtils
+							.unescapeHtml4(s.split("<title>")[1]
+									.split("</title")[0]);
 				}
 
 				gvidMatcher = gvidPattern.matcher(s);
@@ -115,9 +109,9 @@ public class Utubr {
 					String url0;
 					String url1;
 					String urlFinal;
-					System.out.println(gvidMatcher.groupCount());
+					// System.out.println(gvidMatcher.groupCount());
 					for (int i = 0; i < gvidMatcher.groupCount() + 1; i++) {
-						System.out.println(gvidMatcher.group(i));
+						// System.out.println(gvidMatcher.group(i));
 					}
 
 					url0 = gvidMatcher.group(1);

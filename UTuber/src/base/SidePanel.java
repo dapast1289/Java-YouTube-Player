@@ -5,14 +5,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class SidePanel extends JScrollPane {
+public class SidePanel extends JPanel {
 
 	/**
 	 * 
@@ -22,9 +24,17 @@ public class SidePanel extends JScrollPane {
 	static DefaultListModel<String> listModel = new DefaultListModel<String>();
 	static int lastSelectedIndex;
 	static ArrayList<String[]> array;
+	static JScrollPane jsp = new JScrollPane();
 
 	public SidePanel() {
-		setViewportView(jlist);
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		
+		ChartBar cb = new ChartBar(this);
+		cb.setPreferredSize(new Dimension(50,50));
+		add(cb);
+		add(jsp);
+		
+		jsp.setViewportView(jlist);
 		jlist.setModel(listModel);
 
 		array = new ArrayList<>();
@@ -89,7 +99,7 @@ public class SidePanel extends JScrollPane {
 					}
 				});
 
-		jlist.addMouseListener(new MouseListener() {
+		addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
