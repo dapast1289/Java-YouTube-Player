@@ -93,7 +93,7 @@ public class GUI_Main {
 		sPanel.add(sButton);
 
 		sidepanel = new SidePanel();
-		sidepanel.setPreferredSize(new Dimension(100,100));
+		sidepanel.setPreferredSize(new Dimension(300,300));
 		
 		sidepanel.setData(Charter.parseCharts());
 
@@ -110,6 +110,8 @@ public class GUI_Main {
 
 		jf.pack();
 		jf.setVisible(true);
+		
+		
 
 	}
 

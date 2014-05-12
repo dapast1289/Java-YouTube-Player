@@ -15,6 +15,7 @@ public class MediaStream {
 		this.itag = itag;
 		this.sig = sig;
 		this.type = type;
+		System.out.println("type: " + type);
 	}
 	public String getUrl() {
 		return url;

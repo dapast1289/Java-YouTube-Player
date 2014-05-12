@@ -1,8 +1,5 @@
 package base;
 
-import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -27,13 +24,12 @@ public class SidePanel extends JPanel {
 	static JScrollPane jsp = new JScrollPane();
 
 	public SidePanel() {
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		ChartBar cb = new ChartBar(this);
-		cb.setPreferredSize(new Dimension(50,50));
 		add(cb);
 		add(jsp);
-		
+
 		jsp.setViewportView(jlist);
 		jlist.setModel(listModel);
 
@@ -52,45 +48,12 @@ public class SidePanel extends JPanel {
 							public void run() {
 								int index = jlist.getSelectedIndex();
 								if (index != -1 && index != lastSelectedIndex) {
-									if (array.get(index)[0] != null) {
-										if (GUI_Main.preferAudio()) {
-											GUI_Main.play(Extractor.extractFmt(
-													array.get(index)[0],
-													array.get(index)[1])
-													.getAudioStream());
-										} else {
-											GUI_Main.play(Extractor.extract(
-													array.get(index)[0],
-													array.get(index)[1])
-													.getDecodedStream(0));
-										}
-										lastSelectedIndex = index;
-									} else if (array.get(index)[1] != null) {
-										System.out.println("playing: "
-												+ Utubr.Search(
-														array.get(index)[1])
-														.get(0)[0]);
-
-										if (GUI_Main.preferAudio()) {
-											GUI_Main.play(Extractor
-													.extractFmt(
-															Utubr.Search(
-																	array.get(index)[1])
-																	.get(0)[0],
-															array.get(index)[1])
-													.getAudioStream());
-										} else {
-											GUI_Main.play(Extractor
-													.extract(
-															Utubr.Search(
-																	array.get(index)[1])
-																	.get(0)[0],
-															array.get(index)[1])
-													.getDecodedStream(0));
-										}
-										lastSelectedIndex = index;
-
+									if (GUI_Main.preferAudio()) {
+										GUI_Main.play(getSelectedAudio());
+									} else {
+										GUI_Main.play(getSelectedVideo());
 									}
+									lastSelectedIndex = index;
 								}
 
 							}
@@ -98,46 +61,6 @@ public class SidePanel extends JPanel {
 
 					}
 				});
-
-		addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setPreferredSize(new Dimension(100, 100));
-				revalidate();
-				doLayout();
-
-				GUI_Main.jf.revalidate();
-				GUI_Main.jf.doLayout();
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setPreferredSize(new Dimension(500, 100));
-				revalidate();
-				doLayout();
-
-				GUI_Main.jf.revalidate();
-				GUI_Main.jf.doLayout();
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
 	}
 
 	public void setData(ArrayList<String[]> array) {
@@ -149,10 +72,37 @@ public class SidePanel extends JPanel {
 		lastSelectedIndex = -1;
 	}
 
+	public static String getSelectedAudio() {
+		int index = jlist.getSelectedIndex();
+		if (array.get(index)[0] != null) {
+			return Extractor.extractFmt(array.get(index)[0],
+					array.get(index)[1]).getAudioStream();
+		}
+		return Extractor.extractFmt(
+				Utubr.Search(array.get(index)[1]).get(0)[0],
+				array.get(index)[1]).getAudioStream();
+
+	}
+
+	public static String getSelectedVideo() {
+		int index = jlist.getSelectedIndex();
+		if (array.get(index)[0] != null) {
+			return Extractor.extract(array.get(index)[0], array.get(index)[1])
+					.getDecodedStream(0);
+		}
+		return Extractor.extract(Utubr.Search(array.get(index)[1]).get(0)[0],
+				array.get(index)[1]).getDecodedStream(0);
+	}
+
 	public static void playNext() {
 		if (jlist.getSelectedIndex() < array.size()) {
 			jlist.setSelectedIndex(jlist.getSelectedIndex() + 1);
+			lastSelectedIndex = jlist.getSelectedIndex();
 		}
+	}
+	
+	public static String getSelectedName() {
+		return jlist.getSelectedValue();
 	}
 
 	public static JList<String> getJlist() {
@@ -169,6 +119,22 @@ public class SidePanel extends JPanel {
 
 	public static void setListModel(DefaultListModel<String> listModel) {
 		SidePanel.listModel = listModel;
+	}
+
+	public static int getLastSelectedIndex() {
+		return lastSelectedIndex;
+	}
+
+	public static void setLastSelectedIndex(int lastSelectedIndex) {
+		SidePanel.lastSelectedIndex = lastSelectedIndex;
+	}
+
+	public static ArrayList<String[]> getArray() {
+		return array;
+	}
+
+	public static void setArray(ArrayList<String[]> array) {
+		SidePanel.array = array;
 	}
 
 }

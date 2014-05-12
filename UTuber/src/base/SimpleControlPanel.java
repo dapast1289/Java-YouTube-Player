@@ -27,6 +27,7 @@ public class SimpleControlPanel extends JPanel {
 			.newSingleThreadScheduledExecutor();
 	private boolean isSlidingPositionSlider = false;
 	private JButton downloadButton;
+	private JButton mp3downloadButton;
 	private JButton playButton;
 
 	
@@ -48,11 +49,18 @@ public class SimpleControlPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					openWebpage(new URI(mediaPlayer.getMediaMeta().getTitle()));
-				} catch (URISyntaxException e1) {
-					e1.printStackTrace();
-				}
+					Extractor.download(mediaPlayer.getMediaMeta().getTitle(), SidePanel.getSelectedName() + ".mp4");
+			}
+		});
+		
+		mp3downloadButton = new JButton("Download mp3");
+		mp3downloadButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String dl = SidePanel.getSelectedAudio();
+				System.out.println("Downloading mp3: " + dl);
+				Extractor.download(dl, SidePanel.getSelectedName() + ".mp3");
 			}
 		});
 		
@@ -73,6 +81,7 @@ public class SimpleControlPanel extends JPanel {
 		add(playButton);
 		add(positionSlider);
 		add(downloadButton);
+		add(mp3downloadButton);
 		
 		
 		positionSlider.addMouseListener(new MouseAdapter() {

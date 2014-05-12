@@ -55,11 +55,26 @@ public class VidPage {
 	
 	public String getAudioStream() {
 		for (MediaStream ms : array) {
-			if (ms.getType().startsWith("audio")) {
+			if (ms.getType().equals("audio;mp4")) {
+				return getDecodedStream(ms);
+			}
+		}
+		for (MediaStream ms : array) {
+			if (ms.getType().equals("audio;webm")) {
 				return getDecodedStream(ms);
 			}
 		}
 		System.err.println("Could not find suitable audio stream");
+		return getDecodedStream(0);
+	}
+	
+	public String getMp4Audio() {
+		for (MediaStream ms : array) {
+			if (ms.getType().equals("audio;mp4")) {
+				return getDecodedStream(ms);
+			}
+		}
+		System.err.println("Could not find suitable mp3 stream");
 		return getDecodedStream(0);
 	}
 	
