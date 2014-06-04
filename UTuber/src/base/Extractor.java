@@ -28,26 +28,25 @@ public class Extractor {
 	static Long time;
 
 	public static void main(String[] args) {
-		System.out.println(downloadSearchAudio("").toURI());
-
+		System.out.println(downloadSearchAudio("Imagine dragons").toURI());
 	}
 
 	public static File downloadSearchAudio(String s) {
-		String[] searched = Utubr.Search(s).get(0);
-		VidPage vp = extractFmt(searched[0], searched[1]);
+		SearchVid searched = YT_API.search(s, 1).get(0);
+		VidPage vp = extractFmt(searched.url, searched.title);
 
 		System.out.println("type: " + vp.getAudioMS().getType());
-		File downloadedFile = download(vp.getAudioStream(), searched[1]
+		File downloadedFile = download(vp.getAudioStream(), searched.title
 				+ ".mp3");
 		return downloadedFile;
 	}
 
 	public static File downloadSearchVideo(String s) {
-		String[] searched = Utubr.Search(s).get(0);
-		VidPage vp = extract(searched[0], searched[1]);
+		SearchVid searched = YT_API.search(s, 1).get(0);
+		VidPage vp = extract(searched.url, searched.title);
 		System.out.println(vp.toString());
 		System.out.println("type: " + vp.getSmallMS().getType());
-		String name = searched[1] + ".mp4";
+		String name = searched.title + ".mp4";
 		File downloadedFile = download(vp.getSmall(), name);
 		return downloadedFile;
 	}
@@ -339,6 +338,7 @@ public class Extractor {
 
 	public static String getStreamMap(String youtubePage) {
 		try {
+			System.out.println(youtubePage);
 			return youtubePage.split("url_encoded_fmt_stream_map\": \"")[1]
 					.split("\"")[0];
 		} catch (Exception e) {

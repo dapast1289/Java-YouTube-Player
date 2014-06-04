@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -22,9 +21,9 @@ public class Charter extends JScrollPane {
 		parseCharts();
 	}
 	
-	public static ArrayList<String[]> parseCharts() {
+	public static ArrayList<SearchVid> parseCharts() {
 		try {
-			ArrayList<String[]> array = new ArrayList<String[]>();
+			ArrayList<SearchVid> array = new ArrayList<SearchVid>();
 			URL chartsURL = new URL("http://charts.spotify.com/api/charts/most_shared/global/latest");
 			URLConnection urlConnection = chartsURL.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -41,7 +40,7 @@ public class Charter extends JScrollPane {
 						
 						name = StringEscapeUtils.unescapeJson(songArtist[0]) + " - " + StringEscapeUtils.unescapeJson(songArtist[1]);
 						System.out.println("name: " + name);
-						array.add(new String[] {null , name});
+						array.add(new SearchVid(null, name));
 					}
 				}
 			}

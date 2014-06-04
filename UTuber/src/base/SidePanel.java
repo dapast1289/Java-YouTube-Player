@@ -20,7 +20,7 @@ public class SidePanel extends JPanel {
 	static JList<String> jlist = new JList<String>();
 	static DefaultListModel<String> listModel = new DefaultListModel<String>();
 	static int lastSelectedIndex;
-	static ArrayList<String[]> array;
+	static ArrayList<SearchVid> array;
 	static JScrollPane jsp = new JScrollPane();
 
 	public SidePanel() {
@@ -63,35 +63,36 @@ public class SidePanel extends JPanel {
 				});
 	}
 
-	public void setData(ArrayList<String[]> array) {
+	public void setData(ArrayList<SearchVid> array) {
 		SidePanel.array = array;
 		listModel.removeAllElements();
-		for (String[] row : array) {
-			listModel.addElement(row[1]);
+		for (SearchVid row : array) {
+			listModel.addElement(row.title);
 		}
 		lastSelectedIndex = -1;
 	}
 
 	public static String getSelectedAudio() {
 		int index = jlist.getSelectedIndex();
-		if (array.get(index)[0] != null) {
-			return Extractor.extractFmt(array.get(index)[0],
-					array.get(index)[1]).getAudioStream();
+		if (array.get(index).url != null) {
+			return Extractor.extractFmt(array.get(index).url,
+					array.get(index).title).getAudioStream();
 		}
-		return Extractor.extractFmt(
-				Utubr.Search(array.get(index)[1]).get(0)[0],
-				array.get(index)[1]).getAudioStream();
+		String title = array.get(index).title;
+		return Extractor.extractFmt(YT_API.search(title, 1).get(0).url, title)
+				.getAudioStream();
 
 	}
 
 	public static String getSelectedVideo() {
 		int index = jlist.getSelectedIndex();
-		if (array.get(index)[0] != null) {
-			return Extractor.extract(array.get(index)[0], array.get(index)[1])
+		if (array.get(index).url != null) {
+			return Extractor.extract(array.get(index).url, array.get(index).title)
 					.getDecodedStream(0);
 		}
-		return Extractor.extract(Utubr.Search(array.get(index)[1]).get(0)[0],
-				array.get(index)[1]).getDecodedStream(0);
+		String title = array.get(index).title;
+		return Extractor.extract(YT_API.search(title, 1).get(0).url,
+				title).getDecodedStream(0);
 	}
 
 	public static void playNext() {
@@ -100,7 +101,7 @@ public class SidePanel extends JPanel {
 			lastSelectedIndex = jlist.getSelectedIndex();
 		}
 	}
-	
+
 	public static String getSelectedName() {
 		return jlist.getSelectedValue();
 	}
@@ -129,11 +130,11 @@ public class SidePanel extends JPanel {
 		SidePanel.lastSelectedIndex = lastSelectedIndex;
 	}
 
-	public static ArrayList<String[]> getArray() {
+	public static ArrayList<SearchVid> getArray() {
 		return array;
 	}
 
-	public static void setArray(ArrayList<String[]> array) {
+	public static void setArray(ArrayList<SearchVid> array) {
 		SidePanel.array = array;
 	}
 

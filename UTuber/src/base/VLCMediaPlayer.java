@@ -1,10 +1,5 @@
 package base;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
-import javax.swing.JFrame;
-
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -20,25 +15,6 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public static void main(String[] args) {
-		VLCMediaPlayer vlc = new VLCMediaPlayer();
-		
-		JFrame jf = new JFrame();
-		jf.setLayout(new BorderLayout());
-		jf.add(vlc, BorderLayout.CENTER);
-		jf.setVisible(true);
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.setPreferredSize(new Dimension(1200,800));
-		
-		PlayerControlsPanel p = new PlayerControlsPanel(vlc.getMediaPlayer());
-		
-		vlc.getMediaPlayer().setVolume(100);
-		
-		jf.add(p, BorderLayout.SOUTH);
-		
-		
-	}
 
 	String vlcPath;
 
@@ -193,6 +169,8 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 
 	public void play(String mediaURL) {
 		getMediaPlayer().playMedia(mediaURL);
+		System.out.println("Seekable: " + getMediaPlayer().isSeekable());
+		
 	}
 
 }

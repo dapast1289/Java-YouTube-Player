@@ -120,9 +120,9 @@ public class ChartBar extends JPanel implements ActionListener{
 		TrackList tl = getTrackList();
 		List<Track> atl = tl.getTracks();
 		
-		ArrayList<String[]> tracks = new ArrayList<>();
+		ArrayList<SearchVid> tracks = new ArrayList<>();
 		for (Track track : atl) {
-			tracks.add(new String[] {null, track.getTrack_name() + " - " + track.getArtist_name()});
+			tracks.add(new SearchVid(null, track.getTrack_name() + " - " + track.getArtist_name()));
 		}
 		
 		parent.setData(tracks);

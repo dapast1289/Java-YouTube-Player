@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -78,10 +77,20 @@ public class SimpleControlPanel extends JPanel {
 			}
 		});
 		
+		JButton nextButton = new JButton("+10");
+		nextButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mediaPlayer.setPosition((float) (mediaPlayer.getPosition() + 0.1));
+			}
+		});
+		
 		add(playButton);
 		add(positionSlider);
 		add(downloadButton);
 		add(mp3downloadButton);
+		add(nextButton);
 		
 		
 		positionSlider.addMouseListener(new MouseAdapter() {
@@ -122,6 +131,7 @@ public class SimpleControlPanel extends JPanel {
 		if (positionValue > 0.999f) {
 			positionValue = 0.999f;
 		}
+		
 		mediaPlayer.setPosition(positionValue);
 	}
 	
