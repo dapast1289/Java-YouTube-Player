@@ -25,7 +25,7 @@ public class YT_API {
 	
 	public static ArrayList<SearchVid> search(String search, int numberOfItems) {
 		
-		ArrayList<SearchVid> searchArray = new ArrayList<>();
+		ArrayList<SearchVid> searchArray = new ArrayList<SearchVid>();
 		
 		String title = null;
 		String id = null;

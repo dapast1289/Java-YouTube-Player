@@ -307,63 +307,54 @@ public class PlayerControlsPanel extends JPanel {
 		});
 
 		previousChapterButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.previousChapter();
 			}
 		});
 
 		rewindButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				skip(-SKIP_TIME_MS);
 			}
 		});
 
 		stopButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.stop();
 			}
 		});
 
 		pauseButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.pause();
 			}
 		});
 
 		playButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.play();
 			}
 		});
 
 		fastForwardButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				skip(SKIP_TIME_MS);
 			}
 		});
 
 		nextChapterButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.nextChapter();
 			}
 		});
 
 		toggleMuteButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.mute();
 			}
 		});
 
 		volumeSlider.addChangeListener(new ChangeListener() {
-			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 				// if(!source.getValueIsAdjusting()) {
@@ -431,7 +422,6 @@ public class PlayerControlsPanel extends JPanel {
 			this.mediaPlayer = mediaPlayer;
 		}
 
-		@Override
 		public void run() {
 			final long time = mediaPlayer.getTime();
 			final int position = (int) (mediaPlayer.getPosition() * 1000.0f);
@@ -442,7 +432,6 @@ public class PlayerControlsPanel extends JPanel {
 			// Event
 			// Dispatch Thread
 			SwingUtilities.invokeLater(new Runnable() {
-				@Override
 				public void run() {
 					if (mediaPlayer.isPlaying()) {
 						updateTime(time);

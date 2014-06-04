@@ -46,7 +46,6 @@ public class SimpleControlPanel extends JPanel {
 		downloadButton = new JButton("Download");
 		downloadButton.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 					Extractor.download(mediaPlayer.getMediaMeta().getTitle(), SidePanel.getSelectedName() + ".mp4");
 			}
@@ -55,7 +54,6 @@ public class SimpleControlPanel extends JPanel {
 		mp3downloadButton = new JButton("Download mp3");
 		mp3downloadButton.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				String dl = SidePanel.getSelectedAudio();
 				System.out.println("Downloading mp3: " + dl);
@@ -66,7 +64,6 @@ public class SimpleControlPanel extends JPanel {
 		playButton = new JButton("Play/Pause");
 		playButton.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (mediaPlayer.isPlaying()) {
 					mediaPlayer.pause();
@@ -80,7 +77,6 @@ public class SimpleControlPanel extends JPanel {
 		JButton nextButton = new JButton("+10");
 		nextButton.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.setPosition((float) (mediaPlayer.getPosition() + 0.1));
 			}
@@ -146,7 +142,6 @@ public class SimpleControlPanel extends JPanel {
 			this.player = player;
 		}
 
-		@Override
 		public void run() {
 			int position = (int) (player.getPosition() * 10000f);
 			if (!isSlidingPositionSlider)

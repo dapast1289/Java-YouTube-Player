@@ -33,18 +33,16 @@ public class SidePanel extends JPanel {
 		jsp.setViewportView(jlist);
 		jlist.setModel(listModel);
 
-		array = new ArrayList<>();
+		array = new ArrayList<SearchVid>();
 		lastSelectedIndex = 0;
 
 		jlist.getSelectionModel().addListSelectionListener(
 				new ListSelectionListener() {
 
-					@Override
 					public void valueChanged(ListSelectionEvent e) {
 						jlist.repaint();
 						SwingUtilities.invokeLater(new Runnable() {
 
-							@Override
 							public void run() {
 								int index = jlist.getSelectedIndex();
 								if (index != -1 && index != lastSelectedIndex) {

@@ -115,12 +115,11 @@ public class ChartBar extends JPanel implements ActionListener{
 		return countries;
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		TrackList tl = getTrackList();
 		List<Track> atl = tl.getTracks();
 		
-		ArrayList<SearchVid> tracks = new ArrayList<>();
+		ArrayList<SearchVid> tracks = new ArrayList<SearchVid>();
 		for (Track track : atl) {
 			tracks.add(new SearchVid(null, track.getTrack_name() + " - " + track.getArtist_name()));
 		}

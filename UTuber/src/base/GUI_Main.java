@@ -40,9 +40,14 @@ public class GUI_Main {
 	public GUI_Main() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
 		}
 		
 		JFXPanel jp = new JFXPanel();
@@ -59,7 +64,6 @@ public class GUI_Main {
 		sButton = new JButton("GO");
 		sButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				searchAction();
 			}
@@ -70,7 +74,6 @@ public class GUI_Main {
 
 		sBar.addKeyListener(new KeyListener() {
 
-			@Override
 			public void keyTyped(KeyEvent e) {
 				
 				if ( e.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -112,9 +115,6 @@ public class GUI_Main {
 
 		jf.pack();
 		jf.setVisible(true);
-		
-		
-
 	}
 
 	public static void play(String media) {
