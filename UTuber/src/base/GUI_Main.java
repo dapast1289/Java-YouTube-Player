@@ -139,6 +139,7 @@ public class GUI_Main {
 				URL audioURL = new URL(url);
 				play(audioURL.toString());
 				sidepanel.setData(urlArray);
+				SidePanel.playNext();
 			} catch (MalformedURLException e1) {
 				e1.printStackTrace();
 			}

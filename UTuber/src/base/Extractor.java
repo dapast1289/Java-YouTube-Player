@@ -63,7 +63,6 @@ public class Extractor {
 	public static File download(String urlString, String filename) {
 		try {
 			URL url = new URL(urlString);
-			System.out.println(urlString);
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 			new File("download").mkdir();
 			File file = new File("download/" + filename);
@@ -114,7 +113,6 @@ public class Extractor {
 			if (string.startsWith("type")) {
 				type = string.substring(5).split("\\%3B")[0]
 						.replace("%2F", ";");
-				// System.out.println("type: " + type);
 			}
 			if (string.startsWith("url=")) {
 				try {
@@ -338,7 +336,6 @@ public class Extractor {
 
 	public static String getStreamMap(String youtubePage) {
 		try {
-			System.out.println(youtubePage);
 			return youtubePage.split("url_encoded_fmt_stream_map\": \"")[1]
 					.split("\"")[0];
 		} catch (Exception e) {

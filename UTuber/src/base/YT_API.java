@@ -32,7 +32,6 @@ public class YT_API {
 		
 		String searchResultJSON = Extractor.urlToString(getUrl(search, numberOfItems));
 		
-		System.out.println(searchResultJSON);
 		String[] parts = searchResultJSON.split("\"id\": \\{");
 		
 		Pattern idPattern = Pattern.compile("\"videoId\": \"(.*)\"\\s+\\}");

@@ -69,7 +69,6 @@ public class SidePanel extends JPanel {
 		for (SearchVid row : array) {
 			listModel.addElement(row.title);
 		}
-		lastSelectedIndex = -1;
 	}
 
 	public static String getSelectedAudio() {
@@ -98,7 +97,6 @@ public class SidePanel extends JPanel {
 	public static void playNext() {
 		if (jlist.getSelectedIndex() < array.size()) {
 			jlist.setSelectedIndex(jlist.getSelectedIndex() + 1);
-			lastSelectedIndex = jlist.getSelectedIndex();
 		}
 	}
 
