@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+@SuppressWarnings("restriction")
 public class GUI_Main {
 
 	public static void main(String[] args) {

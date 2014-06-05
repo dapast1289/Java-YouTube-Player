@@ -21,6 +21,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+@SuppressWarnings("restriction")
 public class Extractor {
 
 	final static String fmt = "A\", \"url_encoded_fmt_stream_map\": \"type=vi\"";
