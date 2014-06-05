@@ -22,6 +22,12 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+
 public class GUI_Main {
 
 	public static void main(String[] args) {
@@ -38,6 +44,9 @@ public class GUI_Main {
 	static JCheckBox jcb;
 	
 	public GUI_Main() {
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
+				"C:/Program Files/VideoLAN/VLC");
+		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
