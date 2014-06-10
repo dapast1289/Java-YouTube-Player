@@ -141,8 +141,6 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 
 	public void play(String mediaURL) {
 		getMediaPlayer().playMedia(mediaURL);
-		System.out.println("Seekable: " + getMediaPlayer().isSeekable());
-		
 	}
 
 }

@@ -6,7 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -55,9 +61,10 @@ public class SimpleControlPanel extends JPanel {
 		mp3downloadButton.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				String dl = SidePanel.getSelectedAudio();
-				System.out.println("Downloading mp3: " + dl);
-				Extractor.download(dl, SidePanel.getSelectedName() + ".mp3");
+				String dl = SidePanel.getSelectedAudioMp4Preffered();
+				System.out.println("Downloading mp4: " + dl);
+				File mp4File = Extractor.download(dl, SidePanel.getSelectedName() + ".mp4");
+				execute(new String[] {"avconv", "-i", mp4File.getAbsolutePath(), SidePanel.getSelectedName() + ".mp3"});
 			}
 		});
 		
@@ -148,5 +155,35 @@ public class SimpleControlPanel extends JPanel {
 			positionSlider.setValue(position);
 		}
 
+	}
+	
+	public static ArrayList<String> execute(String[] commands) {
+		System.out.println("commands: " + Arrays.deepToString(commands));
+		ProcessBuilder pb = new ProcessBuilder(commands);
+		ArrayList<String> array = new ArrayList<String>();
+		try {
+			Process proc = pb.start();
+			BufferedReader input = new BufferedReader(new InputStreamReader(
+					proc.getInputStream()));
+			BufferedReader error = new BufferedReader(new InputStreamReader(
+					proc.getErrorStream()));
+			String s = null;
+
+			while ((s = input.readLine()) != null) {
+				System.out.println(s);
+
+				array.add(s);
+			}
+			
+			while ((s = error.readLine()) != null) {
+				System.out.println("e: " + s);
+			}
+			
+		} catch (IOException e) {
+			System.out.println("command not found");
+			
+		}
+
+		return array;
 	}
 }

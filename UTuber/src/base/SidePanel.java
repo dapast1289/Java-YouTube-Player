@@ -78,7 +78,17 @@ public class SidePanel extends JPanel {
 		String title = array.get(index).title;
 		return Extractor.extractFmt(YT_API.search(title, 1).get(0).url, title)
 				.getAudioStream();
-
+	}
+	
+	public static String getSelectedAudioMp4Preffered() {
+		int index = jlist.getSelectedIndex();
+		if (array.get(index).url != null) {
+			return Extractor.extractFmt(array.get(index).url,
+					array.get(index).title).getMp4Audio();
+		}
+		String title = array.get(index).title;
+		return Extractor.extractFmt(YT_API.search(title, 1).get(0).url, title)
+				.getMp4Audio();
 	}
 
 	public static String getSelectedVideo() {
