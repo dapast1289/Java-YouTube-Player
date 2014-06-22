@@ -21,7 +21,6 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-@SuppressWarnings("restriction")
 public class Extractor {
 
 	final static String fmt = "A\", \"url_encoded_fmt_stream_map\": \"type=vi\"";
@@ -34,7 +33,7 @@ public class Extractor {
 
 	public static File downloadSearchAudio(String s) {
 		SearchVid searched = YT_API.search(s, 1).get(0);
-		VidPage vp = extractFmt(searched.url, searched.title);
+		VidPage vp = extractFmt(searched);
 
 		System.out.println("type: " + vp.getAudioMS().getType());
 		File downloadedFile = download(vp.getAudioStream(), searched.title
@@ -44,7 +43,7 @@ public class Extractor {
 
 	public static File downloadSearchVideo(String s) {
 		SearchVid searched = YT_API.search(s, 1).get(0);
-		VidPage vp = extract(searched.url, searched.title);
+		VidPage vp = extract(searched);
 		System.out.println(vp.toString());
 		System.out.println("type: " + vp.getSmallMS().getType());
 		String name = searched.title + ".mp4";
@@ -78,10 +77,10 @@ public class Extractor {
 
 	}
 
-	public static VidPage extractFmt(String urlString, String title) {
+	public static VidPage extractFmt(SearchVid sv) {
 		URL url;
 		try {
-			url = new URL(urlString);
+			url = new URL(sv.url);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -94,7 +93,7 @@ public class Extractor {
 		ArrayList<MediaStream> mediaArray = new ArrayList<MediaStream>();
 
 		for (String string : fmtStringList) {
-			mediaArray.add(parseFmt(string, title));
+			mediaArray.add(parseFmt(string, sv.title));
 		}
 
 		VidPage vp = new VidPage(mediaArray, playerURL);
@@ -270,14 +269,14 @@ public class Extractor {
 
 	}
 
-	public static VidPage extract(String urlString, String title) {
-		if (!validiteURL(urlString)) {
-			System.err.println("Invalid url provided: " + urlString);
+	public static VidPage extract(SearchVid vid) {
+		if (!validiteURL(vid.url)) {
+			System.err.println("Invalid url provided: " + vid.url);
 			return null;
 		}
 		URL url;
 		try {
-			url = new URL(urlString);
+			url = new URL(vid.url);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -310,7 +309,7 @@ public class Extractor {
 						}
 						if (!tempurl.contains("&title=")) {
 							tempurl += "&title="
-									+ URLEncoder.encode(title, "UTF-8");
+									+ URLEncoder.encode(vid.title, "UTF-8");
 						}
 
 						// System.out.println(tempurl);

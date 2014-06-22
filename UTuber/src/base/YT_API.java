@@ -8,48 +8,53 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class YT_API {
-	
+
 	public static void main(String[] args) {
 		ArrayList<SearchVid> s = search("charlie the unicorn", 5);
 		for (SearchVid searchVid : s) {
 			System.out.println(searchVid.url);
 		}
 		System.out.println(s.size());
-		
+
 	}
 
-	final static String YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&q=";
-	
-	
+	final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&q=";
+	final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&relatedToVideoID=";
+
 	public static ArrayList<SearchVid> search(String search, int numberOfItems) {
-		
+		return parseAPIJson(getSearchUrl(search, numberOfItems));
+	}
+	
+	public static ArrayList<SearchVid> getRelated(String videoID, int numberOfItems) throws MalformedURLException {
+		return parseAPIJson(getRelatedURL(videoID, numberOfItems));
+	}
+
+	public static ArrayList<SearchVid> parseAPIJson(URL url) {
 		ArrayList<SearchVid> searchArray = new ArrayList<SearchVid>();
-		
+
 		String title = null;
 		String id = null;
-		
-		String searchResultJSON = Extractor.urlToString(getUrl(search, numberOfItems));
-		
+
+		String searchResultJSON = Extractor.urlToString(url);
 		String[] parts = searchResultJSON.split("\"id\": \\{");
-		
+
 		Pattern idPattern = Pattern.compile("\"videoId\": \"(.*)\"\\s+\\}");
 		Matcher idMatcher = null;
 		Pattern titlePattern = Pattern.compile("\"title\": \"(.*)\"\\s+\\}");
 		Matcher titleMatcher = null;
-		
+
 		for (String string : parts) {
 			idMatcher = idPattern.matcher(string);
 			if (idMatcher.find()) {
 				id = idMatcher.group(1);
 				System.out.println("id: " + id);
-				
+
 				titleMatcher = titlePattern.matcher(string);
 				if (titleMatcher.find()) {
 					title = titleMatcher.group(1).replaceAll("\\\\\"", "\"");
 					System.out.println("title: " + title);
-					
+
 					searchArray.add(new SearchVid(id, title));
 				}
 			}
@@ -57,9 +62,28 @@ public class YT_API {
 		return searchArray;
 	}
 	
-	public static URL getUrl(String search, int numberOfItems) {
+	public static URL getRelatedURL(String videoID, int numberOfItems) throws MalformedURLException {
+		if (!(videoID.length() == "Fu2DcHzokew".length())) {
+			System.err.println("Wrong URL length");
+			throw new MalformedURLException();
+		}
 		try {
-			return new URL(YOUTUBE_API_URL.replace(":NUMBER_OF_ITEMS:", String.valueOf(numberOfItems)) + URLEncoder.encode(search, "UTF-8"));
+			return new URL(YOUTUBE_RELATED.replace(":NUMBER_OF_ITEMS:",
+					String.valueOf(numberOfItems))
+					+ URLEncoder.encode(videoID, "UTF-8"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static URL getSearchUrl(String search, int numberOfItems) {
+		try {
+			return new URL(YOUTUBE_SEARCH_URL.replace(":NUMBER_OF_ITEMS:",
+					String.valueOf(numberOfItems))
+					+ URLEncoder.encode(search, "UTF-8"));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
@@ -69,4 +93,3 @@ public class YT_API {
 	}
 
 }
-

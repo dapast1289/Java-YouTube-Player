@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javafx.embed.swing.JFXPanel;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,7 +26,6 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-@SuppressWarnings("restriction")
 public class GUI_Main {
 
 	public static void main(String[] args) {
@@ -59,9 +56,6 @@ public class GUI_Main {
 		} catch (IllegalAccessException e1) {
 			e1.printStackTrace();
 		}
-		
-		JFXPanel jp = new JFXPanel();
-		jp.setVisible(true);
 
 		jf = new JFrame("Music Player");
 		jf.setLayout(new BorderLayout());
@@ -144,7 +138,7 @@ public class GUI_Main {
 		String search = GUI_Main.getSearch();
 		if (!search.isEmpty()) {
 			ArrayList<SearchVid> urlArray = YT_API.search(search, 50);
-			String url = Extractor.extract(urlArray.get(0).url, urlArray.get(0).title).getDecodedStream(0);
+			String url = Extractor.extract(urlArray.get(0)).getDecodedStream(0);
 			try {
 				URL audioURL = new URL(url);
 				play(audioURL.toString());

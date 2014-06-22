@@ -89,6 +89,7 @@ public class SimpleControlPanel extends JPanel {
 			}
 		});
 		
+		
 		add(playButton);
 		add(positionSlider);
 		add(downloadButton);

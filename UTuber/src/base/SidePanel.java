@@ -71,35 +71,33 @@ public class SidePanel extends JPanel {
 
 	public static String getSelectedAudio() {
 		int index = jlist.getSelectedIndex();
-		if (array.get(index).url != null) {
-			return Extractor.extractFmt(array.get(index).url,
-					array.get(index).title).getAudioStream();
+		SearchVid vid = array.get(index);
+		if (vid.url != null) {
+			return Extractor.extractFmt(vid).getAudioStream();
 		}
-		String title = array.get(index).title;
-		return Extractor.extractFmt(YT_API.search(title, 1).get(0).url, title)
-				.getAudioStream();
+		vid = YT_API.search(vid.title, 1).get(0);
+		return Extractor.extractFmt(vid).getAudioStream();
 	}
-	
+
 	public static String getSelectedAudioMp4Preffered() {
 		int index = jlist.getSelectedIndex();
+		SearchVid vid = array.get(index);
 		if (array.get(index).url != null) {
-			return Extractor.extractFmt(array.get(index).url,
-					array.get(index).title).getMp4Audio();
+			return Extractor.extractFmt(vid).getMp4Audio();
 		}
-		String title = array.get(index).title;
-		return Extractor.extractFmt(YT_API.search(title, 1).get(0).url, title)
-				.getMp4Audio();
+		vid = YT_API.search(vid.title, 1).get(0);
+		return Extractor.extractFmt(vid).getMp4Audio();
 	}
 
 	public static String getSelectedVideo() {
 		int index = jlist.getSelectedIndex();
+		SearchVid vid = array.get(index);
 		if (array.get(index).url != null) {
-			return Extractor.extract(array.get(index).url, array.get(index).title)
-					.getDecodedStream(0);
+			return Extractor.extract(vid).getDecodedStream(0);
 		}
-		String title = array.get(index).title;
-		return Extractor.extract(YT_API.search(title, 1).get(0).url,
-				title).getDecodedStream(0);
+		vid = YT_API.search(vid.title, 1).get(0);
+		return Extractor.extract(vid)
+				.getDecodedStream(0);
 	}
 
 	public static void playNext() {
