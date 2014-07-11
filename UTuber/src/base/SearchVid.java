@@ -1,31 +1,41 @@
 package base;
 
 class SearchVid {
-	String url;
-	String title;
-	
-	public SearchVid(String id, String title) {
-		if (id == null) {
-			this.url = null;
-		} else {
-			this.url = "http://www.youtube.com/watch?v=" + id;
-		}
-		this.title = title;
-	}
+    String url;
+    String title;
+    String id;
 
-	public String getUrl() {
-		return url;
+    public SearchVid(String id, String title) {
+	this.id = id;
+	if (id == null) {
+	    this.url = null;
+	} else {
+	    this.url = "http://www.youtube.com/watch?v=" + id;
 	}
+	this.title = title;
+    }
 
-	public void setUrl(String id) {
-		this.url = id;
-	}
+    public String getUrl() {
+	return url;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setUrl(String id) {
+	this.url = id;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getTitle() {
+	return title;
+    }
+
+    public void setTitle(String title) {
+	this.title = title;
+    }
+
+    public String getId() {
+	return id;
+    }
+
+    public void setId(String id) {
+	this.id = id;
+    }
 }
