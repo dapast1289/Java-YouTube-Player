@@ -37,7 +37,6 @@ public class YT_API {
     }
 
     public static ArrayList<SearchVid> parseAPIJson(URL url) {
-	System.out.println("url= " + url.toString());
 	ArrayList<SearchVid> searchArray = new ArrayList<SearchVid>();
 
 	String title = null;

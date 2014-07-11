@@ -181,7 +181,7 @@ public class Extractor {
 
     public static String decryptSignature(String sig, String playerURLString) {
 
-	System.out.println("decrypting: " + sig + " - " + playerURLString);
+//	System.out.println("decrypting: " + sig + " - " + playerURLString);
 
 	if (sig == null) {
 	    return null;
@@ -202,7 +202,7 @@ public class Extractor {
 	String methodName = "";
 
 	if (cacheFile.exists()) {
-	    System.out.println("cache found: " + playerID);
+//	    System.out.println("cache found: " + playerID);
 	    String cacheMethod = "";
 	    try {
 		BufferedReader fr = new BufferedReader(
@@ -213,7 +213,7 @@ public class Extractor {
 		se = new ScriptEngineManager().getEngineByName("javascript");
 		inv = (Invocable) se;
 		se.eval(cacheMethod);
-		System.out.println(methodName + " in " + cacheMethod);
+//		System.out.println(methodName + " in " + cacheMethod);
 		String decryptedSig = (String) inv.invokeFunction(methodName,
 			sig);
 		return decryptedSig;
@@ -381,7 +381,7 @@ public class Extractor {
 	try {
 	    return youtubePage.split("adaptive_fmts\": \"")[1].split("\"")[0];
 	} catch (Exception e) {
-	    System.err.println("No fmt list matched ");
+	    System.err.println("No fmt list matched : " + youtubePage);
 	    e.printStackTrace();
 	    return null;
 	}

@@ -45,17 +45,17 @@ public class GUI_Main {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
 				"C:/Program Files/VideoLAN/VLC");
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (InstantiationException e1) {
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
-		}
+    		try {
+    			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    		} catch (UnsupportedLookAndFeelException e) {
+    			e.printStackTrace();
+    		} catch (ClassNotFoundException e1) {
+    			e1.printStackTrace();
+    		} catch (InstantiationException e1) {
+    			e1.printStackTrace();
+    		} catch (IllegalAccessException e1) {
+    			e1.printStackTrace();
+    		}
 
 		jf = new JFrame("Music Player");
 		jf.setLayout(new BorderLayout());
