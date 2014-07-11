@@ -13,14 +13,13 @@ public class YT_API {
     public static void main(String[] args) {
 	ArrayList<SearchVid> s = search("charlie the unicorn", 5);
 	for (SearchVid searchVid : s) {
-	    System.out.println(searchVid.url);
+	    System.out.println(searchVid.title);
 	}
-	System.out.println(s.size());
 
     }
 
-    final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&q=";
-    final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&relatedToVideoId=";
+    final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&safeSearch=strict&q=";
+    final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&safeSearch=strict&relatedToVideoId=";
 
     public static ArrayList<SearchVid> search(String search, int numberOfItems) {
 	return parseAPIJson(getSearchUrl(search, numberOfItems));

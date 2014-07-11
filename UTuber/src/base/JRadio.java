@@ -8,11 +8,13 @@ import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -35,16 +37,20 @@ public class JRadio {
     static JFrame jf;
     static JTextField jtf;
     static AudioMediaPlayerComponent vlc;
-    static SearchVid song;
-    static SearchVid nextSong;
-    static String nextSongMediaURL;
-    static ArrayList<SearchVid> playedSongs;
+    static int current;
+    static AudioVid currentSong;
+    static ArrayList<AudioVid> songList;
     static MediaPlayer player;
     static JButton nextButton;
     static JLabel songLabel;
+    static Thread generatorThread;
+
+    static JScrollPane listpane;
+    static JList<String> jlist;
+    static DefaultListModel<String> listModel;
 
     public static void initJRadio() {
-	playedSongs = new ArrayList<SearchVid>();
+	songList = new ArrayList<AudioVid>();
 
 	initVLC();
 	initLookAndFeel();
@@ -72,20 +78,26 @@ public class JRadio {
 		playNext();
 	    }
 	});
-	
+
 	songLabel = new JLabel("Enter a song");
 	songLabel.setFont(new Font("Arial", Font.BOLD, 20));
-	
+
+	listModel = new DefaultListModel<String>();
+	jlist = new JList<String>(listModel);
+	listpane = new JScrollPane(jlist);
+
 	jtf.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 	nextButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 	songLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-	
-	jf.add(Box.createVerticalStrut(50));
+
+	jf.add(Box.createVerticalStrut(10));
 	jf.add(jtf);
-	jf.add(Box.createVerticalStrut(50));
+	jf.add(Box.createVerticalStrut(20));
 	jf.add(nextButton);
-	jf.add(Box.createVerticalStrut(50));
+	jf.add(Box.createVerticalStrut(20));
 	jf.add(songLabel);
+	jf.add(Box.createVerticalStrut(20));
+	jf.add(listpane);
 
 	jf.pack();
 	jf.setVisible(true);
@@ -116,17 +128,21 @@ public class JRadio {
 
 	    public void actionPerformed(ActionEvent e) {
 		String search = e.getActionCommand();
-		ArrayList<SearchVid> list = YT_API.search(search, 1);
+		SearchVid origin = YT_API.search(search, 1).get(0);
+		ArrayList<SearchVid> list = YT_API.getRelated(origin.id, 50);
+		songList = new ArrayList<AudioVid>();
+		for (SearchVid searchVid : list) {
+		    songList.add(new AudioVid(searchVid, null));
+		}
+
+		updateSongList();
 		if (list.size() > 0) {
-		    song = list.get(0);
-		    System.out.println("Searched: " + song.getTitle());
-		    String mediaURL = Extractor.extractFmt(song)
-			    .getAudioStream();
-		    playSong(mediaURL, song.title);
+		    current = 0;
+		    currentSong = songList.get(current);
+		    System.out.println("Searched: " + currentSong.getTitle());
+		    playSong(currentSong);
 
-		    playedSongs.add(song);
-
-		    generateNextSong();
+		    generateSongs();
 
 		} else {
 		    System.err.println("none found");
@@ -135,78 +151,54 @@ public class JRadio {
 	});
     }
 
-    public static void generateNextSong() {
-	if (song == null) {
-	    System.err.println("nothing playing, not generating next song");
-	    return;
+    public static void updateSongList() {
+	listModel.clear();
+	for (AudioVid audioVid : songList) {
+	    listModel.addElement(audioVid.title);
 	}
-
-	nextSongMediaURL = null;
-	nextSong = null;
-
-	ArrayList<SearchVid> songList = YT_API.getRelated(song.id, 50);
-	for (SearchVid searchVid : songList) {
-	    if (!hasPlayed(searchVid)) {
-		nextSong = searchVid;
-		nextSongMediaURL = Extractor.extractFmt(nextSong)
-			.getAudioStream();
-		System.out.println("generated " + nextSong.title);
-		return;
-	    }
-	}
-
-	System.out.println("phase 2");
-
-	if (nextSong == null) {
-	    for (SearchVid searchVid : songList) {
-		ArrayList<SearchVid> secondList = YT_API.getRelated(
-			searchVid.id, 50);
-		for (SearchVid searchVid2 : secondList) {
-		    if (!hasPlayed(searchVid2)) {
-			nextSong = searchVid2;
-			nextSongMediaURL = Extractor.extractFmt(nextSong)
-				.getAudioStream();
-			System.out.println("generated " + nextSong.title);
-			return;
-		    }
-		}
-	    }
-	}
-	System.err.println("none found");
-	playedSongs.clear();
-	generateNextSong();
     }
 
-    public static boolean hasPlayed(SearchVid sv) {
-	String id = sv.id;
-	for (SearchVid searchVid : playedSongs) {
-	    if (id.equals(searchVid.id)) {
-		return true;
-	    }
+    public static void generateSongs() {
+	if (generatorThread != null && generatorThread.isAlive()) {
+	    System.out.println("Killing Thread");
+	    generatorThread.interrupt();
 	}
-	return false;
+	generatorThread = new Thread(new Runnable() {
+
+	    public void run() {
+		for (AudioVid audioVid : songList) {
+		    try {
+			audioVid.generateMediaURL();
+		    } catch (Exception e) {
+			e.printStackTrace();
+			songList.remove(audioVid);
+			updateSongList();
+		    }
+		    System.out.println(audioVid.title);
+		    if (Thread.interrupted()) {
+			System.out.println("Thread killed");
+			break;
+		    }
+		}
+
+	    }
+	});
+	generatorThread.start();
     }
 
     public static void playNext() {
-	if (nextSong == null || nextSongMediaURL == null) {
-	    System.err.println("next song is null");
-	    generateNextSong();
+	current++;
+	if (current >= songList.size()) {
+	    current = 0;
+	    System.err.println("over");
 	}
-	playedSongs.add(song);
-	song = nextSong;
-	
-	playSong(nextSongMediaURL, nextSong.title);
-	SwingUtilities.invokeLater(new Runnable() {
-	    
-	    public void run() {
-		generateNextSong();
-	    }
-	});
+	playSong(songList.get(current));
     }
-    
-    public static void playSong(String mediaURL, String title) {
-	player.playMedia(mediaURL);
-	songLabel.setText(title);
+
+    public static void playSong(AudioVid av) {
+	player.playMedia(av.getMediaURL());
+	songLabel.setText(av.getTitle());
+	jlist.setSelectedIndex(current);
     }
 
     public static void onFinish(MediaPlayer mp) {
