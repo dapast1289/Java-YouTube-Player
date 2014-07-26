@@ -28,32 +28,9 @@ public class Extractor {
     static Long time;
 
     public static <A> void main(String[] args) {
-
-	long lasttime = System.currentTimeMillis();
-	SearchVid searchVid = YT_API.search("monstercat hd", 1).get(0);
-	System.out.println(System.currentTimeMillis() - lasttime);
-	lasttime = System.currentTimeMillis();
-	VidPage vp = extractFmt(searchVid);
-	System.out.println(System.currentTimeMillis() - lasttime);
-
-	for (MediaStream mediaStream : vp.getArray()) {
-	    System.out.println(mediaStream.getType() + " "
-		    + mediaStream.getQuality() + "\n" + mediaStream.getUrl());
-
-	}
-	System.err.println(vp.getWebMAudio());
-	System.err.println(vp.getMp4Audio());
-
-	lasttime = System.currentTimeMillis();
-	VidPage nof = extract(searchVid);
-	System.out.println(System.currentTimeMillis() - lasttime);
-	lasttime = System.currentTimeMillis();
-
-	for (MediaStream mediaStream : nof.getArray()) {
-	    System.err.println(mediaStream.getType() + " "
-		    + mediaStream.getQuality() + "\n" + mediaStream.getUrl());
-	}
-
+	VidPage sv = Extractor.extractFmt(YT_API.search("one republic", 1).get(
+		0));
+	System.err.println(sv.getAudioStream());
     }
 
     public static VidPage searchVidPage(String search) {
@@ -181,18 +158,16 @@ public class Extractor {
 
     public static String decryptSignature(String sig, String playerURLString) {
 
-//	System.out.println("decrypting: " + sig + " - " + playerURLString);
-
 	if (sig == null) {
 	    return null;
 	}
 
-	// System.out.println(playerURLString);
+//	System.out.println(playerURLString);
 
 	String playerID = playerURLString.substring(playerURLString
 		.lastIndexOf('/') + 1);
 
-	// System.out.println("PlayerID: " + playerID);
+//	System.out.println("PlayerID: " + playerID);
 
 	File cacheFile = new File("cache/" + playerID);
 
@@ -224,65 +199,88 @@ public class Extractor {
 
 	}
 
-	System.out.println("cache not found:" + playerID);
+//	System.out.println("cache not found:" + playerID);
 
 	String playerPage = "";
 	try {
-	    // System.out.println("signature: " + sig);
+//	    System.out.println("signature: " + sig);
 	    URL pURL = new URL(playerURLString);
 	    playerPage = urlToString(pURL);
-	    int methodNamePostion = playerPage.indexOf("signature=") + 10;
-	    methodName = playerPage.substring(methodNamePostion,
-		    methodNamePostion + 2);
-	    // System.out.println("Signature method name= " + methodName);
 
-	    int methodPostion = playerPage.indexOf("function " + methodName);
-	    actualMethod = playerPage.substring(methodPostion);
-	    actualMethod = actualMethod.split("}")[0] + "};";
-	    // System.out.println(actualMethod);
+	    methodName = regBetween("signature=", "..", "", playerPage);
+//	    System.out.println("Signature method name= " + methodName);
+
+	    actualMethod = regBetween("", "function " + methodName + ".*?\\}",
+		    "", playerPage) + ";";
+//	    System.out.println(actualMethod);
+
+	    String extraMethodName = regBetween("a=", "..", "\\.\\w\\w",
+		    actualMethod);
+	    if (extraMethodName != null) {
+//		System.out.println("Trying to find extra method function: "
+//			+ extraMethodName);
+		String extraMethod = regBetween("", "function "
+			+ extraMethodName + ".*?\\}", "", playerPage);
+		if (extraMethod != null) {
+		    actualMethod += ";" + extraMethod + ";";
+		} else {
+		    System.err.println("Trying var");
+		    extraMethod = regBetween("", "var " + extraMethodName
+			    + ".*?\\}\\}", "", playerPage);
+		    if (extraMethod != null) {
+			actualMethod += ";" + extraMethod + ";";
+		    } else {
+			System.err.println("No extra method found: "
+				+ extraMethodName + " in " + playerURLString);
+		    }
+		}
+
+	    }
 
 	    se = new ScriptEngineManager().getEngineByName("javascript");
 	    inv = (Invocable) se;
 	    se.eval(actualMethod);
-	    // System.out.println(methodName + " - " + actualMethod);
+//	    System.out.println(methodName + " - " + actualMethod);
 	    String decryptedSig = (String) inv.invokeFunction(methodName, sig);
 	    writeMethod(actualMethod, methodName, playerID);
-	    // System.out.println("returning: " + decryptedSig);
+//	    System.out.println("returning: " + decryptedSig);
 	    return decryptedSig;
 
 	} catch (Exception e) {
-	    String errormessage = e.getMessage();
-	    if (errormessage.contains("ReferenceError")) {
-		String newMethodName = errormessage.split("\"")[1];
-		// System.out.println("trying moar for " + newMethodName);
-
-		String newActualMethod = getMethodFromPage(newMethodName,
-			playerPage);
-		// System.out.println(newActualMethod);
-
-		try {
-		    actualMethod = actualMethod + newActualMethod;
-		    se.eval(actualMethod + newActualMethod);
-		    // System.out.println(newMethodName + " - " + actualMethod);
-		    String decryptedSig = (String) inv.invokeFunction(
-			    methodName, sig);
-		    writeMethod(actualMethod, methodName, playerID);
-		    return decryptedSig;
-		} catch (Exception e2) {
-		    e.printStackTrace();
-		}
-
-	    }
+	    e.printStackTrace();
 	}
 
 	return null;
     }
 
+    public static String regBetween(String before, String grouped,
+	    String after, String content) {
+	Pattern p = Pattern.compile(before + "(" + grouped + ")" + after);
+	Matcher m = p.matcher(content);
+	if (m.find()) {
+	    return m.group(1);
+	} else {
+	    System.err.println("No regex match found: " + p.toString());
+	    return null;
+	}
+
+    }
+
     public static String getMethodFromPage(String methodName, String playerPage) {
 	int methodPostion = playerPage.indexOf("function " + methodName);
+	System.out.println("Methodpos: " + methodPostion + " of size "
+		+ playerPage.length());
+	if (methodPostion != -1) {
+	    String actualMethod = playerPage.substring(methodPostion);
+	    actualMethod = actualMethod.split("}")[0] + "};";
+	    return actualMethod;
+	}
+
+	methodPostion = playerPage.indexOf("var " + methodName);
 	String actualMethod = playerPage.substring(methodPostion);
 	actualMethod = actualMethod.split("}")[0] + "};";
 	return actualMethod;
+
     }
 
     public static void writeMethod(String actualMethod, String methodName,

@@ -4,7 +4,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -14,9 +20,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
@@ -34,8 +44,13 @@ public class JRadio {
 	initJRadio();
     }
 
+    final static int SLIDER_SCALE = 1000000;
+
     static JFrame jf;
     static JTextField jtf;
+    static JSlider seeker;
+    static boolean isScrolling = false;
+
     static AudioMediaPlayerComponent vlc;
     static int current;
     static AudioVid currentSong;
@@ -49,6 +64,8 @@ public class JRadio {
     static JList<String> jlist;
     static DefaultListModel<String> listModel;
 
+    static ScheduledExecutorService executorService;
+
     public static void initJRadio() {
 	songList = new ArrayList<AudioVid>();
 
@@ -58,9 +75,12 @@ public class JRadio {
 	// JFrame
 	jf = new JFrame("Radio");
 	jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	jf.setPreferredSize(new Dimension(500, 400));
-	jf.setLocationRelativeTo(null);
+	jf.setPreferredSize(new Dimension(600, 800));
+	// jf.setLocationRelativeTo(null);
 	jf.setLayout(new BoxLayout(jf.getContentPane(), BoxLayout.PAGE_AXIS));
+
+	seeker = new JSlider(0, SLIDER_SCALE);
+	addMouseListener(seeker);
 
 	// JTextField
 	jtf = new JTextField();
@@ -70,6 +90,7 @@ public class JRadio {
 
 	vlc = new AudioMediaPlayerComponent();
 	player = vlc.getMediaPlayer();
+	addMPListener(player);
 
 	nextButton = new JButton("Next");
 	nextButton.addActionListener(new ActionListener() {
@@ -85,6 +106,7 @@ public class JRadio {
 	listModel = new DefaultListModel<String>();
 	jlist = new JList<String>(listModel);
 	listpane = new JScrollPane(jlist);
+	initJListListener();
 
 	jtf.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 	nextButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
@@ -94,6 +116,7 @@ public class JRadio {
 	jf.add(jtf);
 	jf.add(Box.createVerticalStrut(20));
 	jf.add(nextButton);
+	jf.add(seeker);
 	jf.add(Box.createVerticalStrut(20));
 	jf.add(songLabel);
 	jf.add(Box.createVerticalStrut(20));
@@ -101,6 +124,40 @@ public class JRadio {
 
 	jf.pack();
 	jf.setVisible(true);
+
+	executorService = Executors.newSingleThreadScheduledExecutor();
+	executorService.scheduleAtFixedRate(new Updater(player), 0L, 50L,
+		TimeUnit.MILLISECONDS);
+    }
+
+    static class Updater implements Runnable {
+
+	MediaPlayer mp;
+
+	public Updater(MediaPlayer mp) {
+	    this.mp = mp;
+	}
+
+	public void run() {
+	    if (!isScrolling)
+		seeker.setValue((int) (mp.getPosition() * 1000000));
+	}
+
+    }
+
+    public static void addMouseListener(JSlider js) {
+	js.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+		isScrolling = true;
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+		player.setPosition((float) seeker.getValue() / SLIDER_SCALE);
+		isScrolling = false;
+	    }
+	});
     }
 
     public static void initVLC() {
@@ -131,6 +188,7 @@ public class JRadio {
 		SearchVid origin = YT_API.search(search, 1).get(0);
 		ArrayList<SearchVid> list = YT_API.getRelated(origin.id, 50);
 		songList = new ArrayList<AudioVid>();
+		songList.add(new AudioVid(origin, null));
 		for (SearchVid searchVid : list) {
 		    songList.add(new AudioVid(searchVid, null));
 		}
@@ -199,9 +257,30 @@ public class JRadio {
 	player.playMedia(av.getMediaURL());
 	songLabel.setText(av.getTitle());
 	jlist.setSelectedIndex(current);
+	System.err.println("Lenght: " + player.getLength());
     }
 
-    public static void onFinish(MediaPlayer mp) {
+    public static void initJListListener() {
+	jlist.addListSelectionListener(new ListSelectionListener() {
+
+	    public void valueChanged(ListSelectionEvent e) {
+
+		SwingUtilities.invokeLater(new Runnable() {
+
+		    public void run() {
+			int selectedIndex = jlist.getSelectedIndex();
+			if (selectedIndex != current) {
+			    current = selectedIndex;
+			    playSong(songList.get(selectedIndex));
+			}
+		    }
+		});
+
+	    }
+	});
+    }
+
+    public static void addMPListener(MediaPlayer mp) {
 	mp.addMediaPlayerEventListener(new MediaPlayerEventListener() {
 
 	    public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
@@ -311,6 +390,7 @@ public class JRadio {
 	    }
 
 	    public void endOfSubItems(MediaPlayer mediaPlayer) {
+		playNext();
 
 	    }
 
