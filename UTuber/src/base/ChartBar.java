@@ -17,7 +17,7 @@ import javax.swing.JRadioButton;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
-public class ChartBar extends JPanel implements ActionListener{
+public class ChartBar extends JPanel implements ActionListener {
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class ChartBar extends JPanel implements ActionListener{
 
 	private JComboBox<String> countryBox;
 	private JComboBox<String> dateBox;
-	
+
 	private SidePanel parent;
 
 	public ChartBar(SidePanel parent) {
@@ -63,15 +63,15 @@ public class ChartBar extends JPanel implements ActionListener{
 		add(mStreamedButton);
 		add(countryBox);
 		add(dateBox);
-		
+
 		mSharedButton.addActionListener(this);
 		mStreamedButton.addActionListener(this);
 		countryBox.addActionListener(this);
 		dateBox.addActionListener(this);
-		
+
 		countryBox.setSelectedIndex(countryBox.getModel().getSize() - 1);
 	}
-	
+
 	public TrackList getTrackList() {
 		String url = "http://charts.spotify.com/api/charts/";
 		if (mSharedButton.isSelected()) {
@@ -79,22 +79,21 @@ public class ChartBar extends JPanel implements ActionListener{
 		} else {
 			url += "most_streamed/";
 		}
-		
+
 		url += countryBox.getSelectedItem() + "/";
-		
+
 		url += dateBox.getSelectedItem();
-		
+
 		System.out.println("url: " + url);
-		
-		
+
 		try {
 			String trackListJSON = Extractor.urlToString(new URL(url));
 
 			Gson gson = new Gson();
-			
+
 			TrackList tl = gson.fromJson(trackListJSON, TrackList.class);
 			return tl;
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -118,22 +117,17 @@ public class ChartBar extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		TrackList tl = getTrackList();
 		List<Track> atl = tl.getTracks();
-		
-		ArrayList<SearchVid> tracks = new ArrayList<SearchVid>();
+
+		ArrayList<AudioVid> tracks = new ArrayList<AudioVid>();
 		for (Track track : atl) {
-			tracks.add(new SearchVid(null, track.getTrack_name() + " - " + track.getArtist_name()));
+			tracks.add(new AudioVid(null, track.getTrack_name() + " - "
+					+ track.getArtist_name(), null));
 		}
-		
+
 		parent.setData(tracks);
-		
+
 	}
 }
-
-
-
-
-
-
 
 @Generated("org.jsonschema2pojo")
 class Track {

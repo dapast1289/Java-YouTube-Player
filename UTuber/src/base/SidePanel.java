@@ -20,7 +20,7 @@ public class SidePanel extends JPanel {
 	static JList<String> jlist = new JList<String>();
 	static DefaultListModel<String> listModel = new DefaultListModel<String>();
 	static int lastSelectedIndex;
-	static ArrayList<SearchVid> array;
+	static ArrayList<AudioVid> array;
 	static JScrollPane jsp = new JScrollPane();
 
 	public SidePanel() {
@@ -33,7 +33,7 @@ public class SidePanel extends JPanel {
 		jsp.setViewportView(jlist);
 		jlist.setModel(listModel);
 
-		array = new ArrayList<SearchVid>();
+		array = new ArrayList<AudioVid>();
 		lastSelectedIndex = 0;
 
 		jlist.getSelectionModel().addListSelectionListener(
@@ -61,10 +61,10 @@ public class SidePanel extends JPanel {
 				});
 	}
 
-	public void setData(ArrayList<SearchVid> array) {
-		SidePanel.array = array;
+	public void setData(ArrayList<AudioVid> arrayList) {
+		SidePanel.array = arrayList;
 		listModel.removeAllElements();
-		for (SearchVid row : array) {
+		for (SearchVid row : arrayList) {
 			listModel.addElement(row.title);
 		}
 	}
@@ -134,11 +134,11 @@ public class SidePanel extends JPanel {
 		SidePanel.lastSelectedIndex = lastSelectedIndex;
 	}
 
-	public static ArrayList<SearchVid> getArray() {
+	public static ArrayList<AudioVid> getArray() {
 		return array;
 	}
 
-	public static void setArray(ArrayList<SearchVid> array) {
+	public static void setArray(ArrayList<AudioVid> array) {
 		SidePanel.array = array;
 	}
 

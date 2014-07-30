@@ -2,6 +2,7 @@ package base;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -18,13 +19,34 @@ public class Charter extends JScrollPane {
 	private static final long serialVersionUID = -1013963011447988481L;
 
 	public static void main(String[] args) {
-		parseCharts();
+		getMostShared();
+		getMostStreamed();
 	}
 	
-	public static ArrayList<SearchVid> parseCharts() {
+
+	public static ArrayList<AudioVid> getMostShared() {
 		try {
-			ArrayList<SearchVid> array = new ArrayList<SearchVid>();
 			URL chartsURL = new URL("http://charts.spotify.com/api/charts/most_shared/global/latest");
+			return parseCharts(chartsURL);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static ArrayList<AudioVid> getMostStreamed() {
+		try {
+			URL chartsURL = new URL("http://charts.spotify.com/api/charts/most_streamed/global/latest");
+			return parseCharts(chartsURL);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static ArrayList<AudioVid> parseCharts(URL chartsURL) {
+		try {
+			ArrayList<AudioVid> array = new ArrayList<AudioVid>();
 			URLConnection urlConnection = chartsURL.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					urlConnection.getInputStream()));
@@ -37,10 +59,8 @@ public class Charter extends JScrollPane {
 					string = string.replaceAll(".*?track_name\"\\:\"(.*?)\".*artist_name\"\\:\"(.*?)\".*", "$1;$2");
 					String[] songArtist = string.split(";");
 					if (songArtist.length == 2) {
-						
-						name = StringEscapeUtils.unescapeJson(songArtist[0]) + " - " + StringEscapeUtils.unescapeJson(songArtist[1]);
-						System.out.println("name: " + name);
-						array.add(new SearchVid(null, name));
+						name = StringEscapeUtils.unescapeJson(songArtist[1]) + " - " + StringEscapeUtils.unescapeJson(songArtist[0]);
+						array.add(new AudioVid(null, name, null));
 					}
 				}
 			}

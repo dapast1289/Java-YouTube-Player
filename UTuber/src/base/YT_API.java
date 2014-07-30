@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class YT_API {
 
     public static void main(String[] args) {
-	ArrayList<SearchVid> s = search("charlie the unicorn", 5);
+	ArrayList<AudioVid> s = search("charlie the unicorn", 5);
 	for (SearchVid searchVid : s) {
 	    System.out.println(searchVid.title);
 	}
@@ -21,11 +21,11 @@ public class YT_API {
     final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&q=";
     final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&relatedToVideoId=";
 
-    public static ArrayList<SearchVid> search(String search, int numberOfItems) {
+    public static ArrayList<AudioVid> search(String search, int numberOfItems) {
 	return parseAPIJson(getSearchUrl(search, numberOfItems));
     }
 
-    public static ArrayList<SearchVid> getRelated(String videoID,
+    public static ArrayList<AudioVid> getRelated(String videoID,
 	    int numberOfItems) {
 	try {
 	    return parseAPIJson(getRelatedURL(videoID, numberOfItems));
@@ -35,8 +35,8 @@ public class YT_API {
 	}
     }
 
-    public static ArrayList<SearchVid> parseAPIJson(URL url) {
-	ArrayList<SearchVid> searchArray = new ArrayList<SearchVid>();
+    public static ArrayList<AudioVid> parseAPIJson(URL url) {
+	ArrayList<AudioVid> searchArray = new ArrayList<AudioVid>();
 
 	String title = null;
 	String id = null;
@@ -57,7 +57,7 @@ public class YT_API {
 		if (titleMatcher.find()) {
 		    title = titleMatcher.group(1).replaceAll("\\\\\"", "\"");
 
-		    searchArray.add(new SearchVid(id, title));
+		    searchArray.add(new AudioVid(id, title, null));
 		}
 	    }
 	}

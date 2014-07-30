@@ -10,7 +10,7 @@ public class YT_APITest {
 
 	@Test
 	public void test() {
-		ArrayList<SearchVid> s = YT_API.search("charlie the unicorn", 5);
+		ArrayList<AudioVid> s = YT_API.search("charlie the unicorn", 5);
 		for (SearchVid searchVid : s) {
 			System.out.println(searchVid.url);
 		}
@@ -20,7 +20,7 @@ public class YT_APITest {
 	
 	@Test
 	public void testName() throws Exception {
-		ArrayList<SearchVid> s = YT_API.getRelated("Fu2DcHzokew", 1);
+		ArrayList<AudioVid> s = YT_API.getRelated("Fu2DcHzokew", 1);
 		for (SearchVid searchVid : s) {
 			System.out.println(searchVid.url);
 		}

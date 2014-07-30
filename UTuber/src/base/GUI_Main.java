@@ -103,7 +103,7 @@ public class GUI_Main {
 		sidepanel = new SidePanel();
 		sidepanel.setPreferredSize(new Dimension(300,300));
 		
-		sidepanel.setData(Charter.parseCharts());
+		sidepanel.setData(Charter.getMostShared());
 
 		player = new VLCMediaPlayer();
 		
@@ -137,7 +137,7 @@ public class GUI_Main {
 	public static void searchAction() {
 		String search = GUI_Main.getSearch();
 		if (!search.isEmpty()) {
-			ArrayList<SearchVid> urlArray = YT_API.search(search, 50);
+			ArrayList<AudioVid> urlArray = YT_API.search(search, 50);
 			String url = Extractor.extract(urlArray.get(0)).getDecodedStream(0);
 			try {
 				URL audioURL = new URL(url);
