@@ -27,9 +27,13 @@ public class Extractor {
 
 	static Long time;
 
-	public static <A> void main(String[] args) {
-		VidPage sv = Extractor.extractFmt(YT_API.search("one republic", 1).get(
-				0));
+	final static boolean debug = false;
+
+	public static void main(String[] args) {
+		ArrayList<AudioVid> vid = YT_API.search("one republic", 1);
+		System.out.println(vid.get(0).getUrl());
+
+		VidPage sv = Extractor.extractFmt(vid.get(0));
 		System.err.println(sv.getAudioStream());
 	}
 
@@ -94,6 +98,14 @@ public class Extractor {
 			return null;
 		}
 		String parsedSite = urlToString(url);
+
+		if (parsedSite == null || parsedSite.length() < 200) {
+			System.err.println("parsed site: " + parsedSite);
+			if (debug)
+				Log.writeTo(parsedSite, "parsed_site");
+			System.out.println("URL: " + url);
+		}
+
 		String fmtString = getFmtList(parsedSite);
 		String[] fmtStringList = fmtString.split("(,)");
 		String playerURL = getPlayerURL(parsedSite);
@@ -157,8 +169,6 @@ public class Extractor {
 	}
 
 	public static String decryptSignature(String sig, String playerURLString) {
-
-		boolean debug = false;
 
 		if (sig == null) {
 			return null;
@@ -395,7 +405,8 @@ public class Extractor {
 		} catch (Exception e) {
 			System.err.println("No fmt list matched : " + youtubePage);
 			e.printStackTrace();
-			Log.writeTo(youtubePage, "fmtlog");
+			if (debug)
+				Log.writeTo(youtubePage, "fmtlog");
 			return null;
 		}
 	}
