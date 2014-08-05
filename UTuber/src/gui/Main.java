@@ -11,7 +11,13 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
-	static BorderPane root;
+	private BorderPane root;
+	private Scene scene;
+	private Stage stage;
+	private MenuList menuList;
+	private AudioPlayer audioPlayer;
+	private TopBar topBar;
+	private static Main main;
 
 	public static void main(String[] args) {
 		launch();
@@ -19,34 +25,49 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		main = this;
+		stage = primaryStage;
 
 		root = new BorderPane();
 		
-		MenuList list = new MenuList();
-		AudioPlayer ap = new AudioPlayer();
-		TopBar topBar = new TopBar();
+		audioPlayer = new AudioPlayer();
+		menuList = new MenuList();
+		topBar = new TopBar();
 
-		root.setLeft(list);
-		root.setBottom(ap);
+		root.setLeft(menuList);
+		root.setBottom(audioPlayer);
 		root.setTop(topBar);
 
-		Scene scene = new Scene(root, 1200, 800);
+		scene = new Scene(root, 1200, 800);
 		scene.getStylesheets().add("style.css");
 
-		primaryStage.setTitle("Utubr");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		stage.setTitle("Utubr");
+		stage.setScene(scene);
+		stage.show();
 		
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
 			public void handle(WindowEvent event) {
-				AudioPlayer.stop();
+				audioPlayer.stop();
 				Platform.exit();
+				System.exit(0);
 			}
 		});
 	}
+	
+	public void clearMenuSelection() {
+		menuList.getItemList().getSelectionModel().clearAndSelect(-1);
+	}
 
-	public static void setCenter(Node n) {
+	public void setCenter(Node n) {
 		root.setCenter(n);
+	}
+	
+	public void setTitle(String title) {
+		stage.setTitle("UTubr | " + title);
+	}
+	
+	public static Main getInstance() {
+		return main;
 	}
 }

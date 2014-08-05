@@ -10,15 +10,19 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
-public class MenuList extends ListView<String> {
+public class MenuList extends HBox {
 
 	public final String TOP_LISTS = "Top Lists";
 	public final String RADIO = "Radio";
 
-	TopLists toplists;
+	private TopLists toplists;
+	private RadioPane radioPane;
+	private ListView<String> itemList;
+	private Main main = Main.getInstance();
 
 	public MenuList() {
 		super();
+		getStyleClass().add("list");
 
 		ArrayList<String> menuElements = new ArrayList<String>();
 		menuElements.add(TOP_LISTS);
@@ -26,34 +30,46 @@ public class MenuList extends ListView<String> {
 
 		ObservableList<String> observableList = FXCollections
 				.observableList(menuElements);
-		setItems(observableList);
+		itemList = new ListView<String>(observableList);
 
-		getSelectionModel().selectFirst();
+		itemList.getSelectionModel().selectFirst();
 
 		toplists = new TopLists();
+		radioPane = new RadioPane();
 
-		getSelectionModel().selectedItemProperty().addListener(
-				new ChangeListener<String>() {
+		itemList.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<String>() {
 
 					public void changed(ObservableValue<? extends String> arg0,
 							String oldValue, String newValue) {
-						if (oldValue != newValue) {
-							if (newValue.equals(TOP_LISTS)) {
-								Main.setCenter(toplists);
-							} else {
-								Main.setCenter(new HBox());
-							}
+						System.out.println("Changed from " + oldValue + " to "
+								+ newValue);
+						if (newValue.equals(TOP_LISTS)) {
+							main.setCenter(toplists);
+						} else if (newValue.equals(RADIO)) {
+							main.setCenter(radioPane);
+						} else {
+							main.setCenter(new HBox());
 						}
 					}
 				});
-		
+
+		getChildren().add(itemList);
+
 		Platform.runLater(new Runnable() {
 
 			public void run() {
-				Main.setCenter(toplists);
+				main.setCenter(toplists);
 
 			}
 		});
 	}
 
+	public ListView<String> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(ListView<String> itemList) {
+		this.itemList = itemList;
+	}
 }

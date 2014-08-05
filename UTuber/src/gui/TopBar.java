@@ -7,11 +7,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 
 public class TopBar extends HBox {
+	
+	Main main = Main.getInstance();
 
 	public TopBar() {
 		super();
 		
-		getStyleClass().add("hbox");
+		getStyleClass().add("box");
 		
 		TextField searchField = new TextField();
 		searchField.setPromptText("Search");
@@ -26,7 +28,8 @@ public class TopBar extends HBox {
 			public void handle(KeyEvent e) {
 				if (e.getCode() == KeyCode.ENTER && !tf.getText().isEmpty()) {
 					System.out.println("Searching: " + tf.getText());
-					Main.setCenter(new SearchPane(tf.getText()));
+					main.setCenter(new SearchPane(tf.getText()));
+					main.clearMenuSelection();
 				}
 			}
 		});

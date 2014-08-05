@@ -1,8 +1,17 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
@@ -17,16 +26,28 @@ import com.sun.jna.NativeLibrary;
 
 public class AudioPlayer extends HBox {
 
-	static AudioMediaPlayerComponent vlc;
-	static MediaPlayer player;
-	static ArrayList<AudioVid> songList;
-	static int current;
-	static AudioVid currentSong;
-	static Label songLabel;
+	private AudioMediaPlayerComponent vlc;
+	private MediaPlayer player;
+	private ArrayList<AudioVid> songList;
+	private int current;
+	private AudioVid currentSong;
+	private Label songLabel;
+	private Main main = Main.getInstance();
+	private Button nextButton;
+	private Slider slider;
+	private boolean isDragging = false;
+	private final ScheduledExecutorService sliderUpdater = Executors
+			.newSingleThreadScheduledExecutor();
+	static private AudioPlayer audioPlayer;
+
+	public static AudioPlayer getInstance() {
+		return audioPlayer;
+	}
 
 	public AudioPlayer() {
 		super();
-		getStyleClass().add("hbox");
+		audioPlayer = this;
+		getStyleClass().add("box");
 
 		setPrefHeight(50);
 
@@ -39,41 +60,75 @@ public class AudioPlayer extends HBox {
 		songLabel = new Label("Playing song");
 		songLabel.getStyleClass().add("text");
 
+		nextButton = new Button("Next");
+		nextButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent arg0) {
+				playNext();
+			}
+		});
+
+		slider = new Slider(0f, 1f, 0f);
+		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L,
+				TimeUnit.MILLISECONDS);
+
+		slider.setOnDragDetected(new EventHandler<MouseEvent>() {
+
+			public void handle(MouseEvent event) {
+				System.out.println("drag detected");
+				isDragging = true;
+			}
+		});
+
+		slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
+
+			public void handle(MouseEvent event) {
+				System.out.println("mouse released");
+				player.setPosition((float) slider.getValue());
+				isDragging = false;
+			}
+		});
+
+		getChildren().add(nextButton);
+		getChildren().add(slider);
 		getChildren().add(songLabel);
 	}
 
-	public static void initVLC() {
+	public void initVLC() {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
 				"C:/Program Files/VideoLAN/VLC");
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 	}
 
-	public static void playSongs(ArrayList<AudioVid> songs, int index) {
+	public void playSongs(ArrayList<AudioVid> songs, int index) {
 		songList = songs;
 		playSong(songList.get(index));
 		current = index;
 	}
 
-	public static void playSong(AudioVid av) {
-		currentSong = songList.get(current);
-		player.playMedia(av.getMediaURL());
+	public void playSong(AudioVid av) {
 		songLabel.setText(av.getTitle());
+		System.err.println("Songlabel set");
+		main.setTitle(av.getTitle());
+		currentSong = av;
+		player.playMedia(currentSong.getMediaURL());
 		System.out.println("Now playing: " + av.getMediaURL());
 	}
 
-	public static void playNext() {
+	public void playNext() {
 		current++;
 		if (current >= songList.size()) {
 			current = 0;
 		}
-		playSong(currentSong);
+		System.out.println("Playing next: " + songList.get(current).getTitle());
+		playSong(songList.get(current));
 	}
 
-	public static void stop() {
+	public void stop() {
 		player.stop();
 	}
 
-	public static void addMPListener(MediaPlayer mp) {
+	public void addMPListener(MediaPlayer mp) {
 		mp.addMediaPlayerEventListener(new MediaPlayerEventListener() {
 
 			public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
@@ -94,10 +149,12 @@ public class AudioPlayer extends HBox {
 
 			public void subItemFinished(MediaPlayer mediaPlayer,
 					int subItemIndex) {
+				System.out.println("Sub finished");
 
 			}
 
 			public void stopped(MediaPlayer mediaPlayer) {
+				System.out.println("Stopped");
 
 			}
 
@@ -175,6 +232,7 @@ public class AudioPlayer extends HBox {
 			}
 
 			public void finished(MediaPlayer mediaPlayer) {
+				System.out.println("Finished");
 				playNext();
 			}
 
@@ -195,6 +253,25 @@ public class AudioPlayer extends HBox {
 
 			}
 		});
+	}
+
+	final class Updater implements Runnable {
+
+		private MediaPlayer mPlayer;
+
+		public Updater(MediaPlayer p) {
+			this.mPlayer = p;
+		}
+
+		public void run() {
+			Platform.runLater(new Runnable() {
+
+				public void run() {
+					if (!isDragging)
+						slider.setValue(mPlayer.getPosition());
+				}
+			});
+		}
 	}
 
 }

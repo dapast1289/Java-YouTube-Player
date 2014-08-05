@@ -1,0 +1,47 @@
+.box {
+	-fx-background-color: #222326;
+	-fx-padding: 15;
+	-fx-spacing: 10;
+}
+
+.content  {
+/* 	-fx-padding: 15; */
+/* 	-fx-spacing: 10; */
+	-fx-background-color: #222326;
+}
+
+.content-text {
+	-fx-text-fill: #FFF;
+}
+
+.text {
+	-fx-text-fill: #FFF;
+}
+
+.content .text {
+	-fx-text-fill: #FFF;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+	-fx-background-color: #222326;
+	-fx-text-fill: white;
+}
+
+.list-cell {
+	-fx-background-color: #121314;
+	-fx-text-fill: #ffffff;
+}
+
+.list-cell:even {
+	-fx-background-color: #0d0e0f;
+}
+
+.list-cell:filled:hover {
+	-fx-background-color: #222326;
+	-fx-text-fill: white;
+}
+
+.list-view, .list-view:focused {
+	-fx-border-width: 0;
+	-fx-background-color: #222326;
+}

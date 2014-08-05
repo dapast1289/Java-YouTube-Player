@@ -11,9 +11,12 @@ import base.AudioVid;
 public class SongList extends ListView<String> {
 
 	ArrayList<AudioVid> songList;
+	AudioPlayer audioPlayer = AudioPlayer.getInstance();
 
 	public SongList() {
 		super();
+		
+		getStyleClass().add("list");
 		setPrefWidth(500);
 
 		addMouseListener();
@@ -41,7 +44,7 @@ public class SongList extends ListView<String> {
 			public void handle(MouseEvent mouseEvent) {
 				if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
 					if (mouseEvent.getClickCount() == 2) {
-						AudioPlayer.playSongs(songList, selInd());
+						audioPlayer.playSongs(songList, selInd());
 					}
 				}
 			}

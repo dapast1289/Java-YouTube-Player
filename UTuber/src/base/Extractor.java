@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -427,14 +429,38 @@ public class Extractor {
 	public static String urlToString(URL url) {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(url.openStream()));
-			StringBuffer buffer = new StringBuffer();
-			int read;
-			char[] chars = new char[1024];
-			while ((read = reader.read(chars)) != -1)
-				buffer.append(chars, 0, read);
+			String content;
+			HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+			if (urlcon.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM) {
+				System.err.println(urlcon.getResponseCode() + " "
+						+ urlcon.getResponseMessage());
 
-			return buffer.toString();
+				String newUrl = urlcon.getHeaderField("Location");
+				System.out.println(newUrl);
+				url = new URL(newUrl);
+				HttpsURLConnection scon = (HttpsURLConnection) url
+						.openConnection();
+				reader = new BufferedReader(new InputStreamReader(
+						scon.getInputStream()));
+				StringBuffer buffer = new StringBuffer();
+				int read;
+				char[] chars = new char[1024];
+				while ((read = reader.read(chars)) != -1)
+					buffer.append(chars, 0, read);
+				content = buffer.toString();
+			} else {
+				reader = new BufferedReader(new InputStreamReader(
+						urlcon.getInputStream()));
+				StringBuffer buffer = new StringBuffer();
+				int read;
+				char[] chars = new char[1024];
+				while ((read = reader.read(chars)) != -1)
+					buffer.append(chars, 0, read);
+				content = buffer.toString();
+
+			}
+
+			return content;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
