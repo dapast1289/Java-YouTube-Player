@@ -20,6 +20,7 @@ public class SongList extends ListView<String> {
 		setPrefWidth(500);
 
 		addMouseListener();
+		
 	}
 
 	public void setSongs(ArrayList<AudioVid> songs) {

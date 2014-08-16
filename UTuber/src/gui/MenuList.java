@@ -9,8 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class MenuList extends HBox {
+public class MenuList extends VBox {
 
 	public final String TOP_LISTS = "Top Lists";
 	public final String RADIO = "Radio";
@@ -19,6 +20,7 @@ public class MenuList extends HBox {
 	private RadioPane radioPane;
 	private ListView<String> itemList;
 	private Main main = Main.getInstance();
+	private SongDisplay songDisplay = SongDisplay.getInstance();
 
 	public MenuList() {
 		super();
@@ -53,8 +55,11 @@ public class MenuList extends HBox {
 						}
 					}
 				});
+		
+		itemList.setPrefHeight(1000);
 
 		getChildren().add(itemList);
+		getChildren().add(songDisplay);
 
 		Platform.runLater(new Runnable() {
 

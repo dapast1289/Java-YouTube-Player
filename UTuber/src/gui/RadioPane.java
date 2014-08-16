@@ -23,7 +23,7 @@ public class RadioPane extends VBox {
 	public RadioPane() {
 		super();
 		
-		getStyleClass().add("content");
+		getStyleClass().add("radiopane");
 		
 		tf = new TextField();
 		tf.getStyleClass().add("textfield");

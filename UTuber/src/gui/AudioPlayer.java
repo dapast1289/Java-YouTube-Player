@@ -8,11 +8,17 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.component.AudioMediaPlayerComponent;
@@ -31,13 +37,14 @@ public class AudioPlayer extends HBox {
 	private ArrayList<AudioVid> songList;
 	private int current;
 	private AudioVid currentSong;
-	private Label songLabel;
 	private Main main = Main.getInstance();
 	private Button nextButton;
+	private Button playPauseButton;
 	private Slider slider;
 	private boolean isDragging = false;
 	private final ScheduledExecutorService sliderUpdater = Executors
 			.newSingleThreadScheduledExecutor();
+	private SongDisplay songDisplay = SongDisplay.getInstance();
 	static private AudioPlayer audioPlayer;
 
 	public static AudioPlayer getInstance() {
@@ -57,10 +64,8 @@ public class AudioPlayer extends HBox {
 		player = vlc.getMediaPlayer();
 		addMPListener(player);
 
-		songLabel = new Label("Playing song");
-		songLabel.getStyleClass().add("text");
-
 		nextButton = new Button("Next");
+		nextButton.setMinWidth(80);
 		nextButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent arg0) {
@@ -68,14 +73,32 @@ public class AudioPlayer extends HBox {
 			}
 		});
 
+		playPauseButton = new Button("Pause");
+		playPauseButton.setMinWidth(80);
+		playPauseButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent event) {
+				Button source = (Button) event.getSource();
+				if (player.isPlaying()) {
+					player.pause();
+					source.setText("Play");
+				} else {
+					if (player.isPlayable()) {
+						player.play();
+						source.setText("Pause");
+					}
+				}
+			}
+		});
+
 		slider = new Slider(0f, 1f, 0f);
 		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L,
 				TimeUnit.MILLISECONDS);
 
-		slider.setOnDragDetected(new EventHandler<MouseEvent>() {
+		slider.setOnMousePressed(new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent event) {
-				System.out.println("drag detected");
+				System.out.println("mouse pressed");
 				isDragging = true;
 			}
 		});
@@ -88,16 +111,22 @@ public class AudioPlayer extends HBox {
 				isDragging = false;
 			}
 		});
+		slider.setPrefWidth(2000);
 
+		getChildren().add(playPauseButton);
 		getChildren().add(nextButton);
 		getChildren().add(slider);
-		getChildren().add(songLabel);
 	}
 
 	public void initVLC() {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
 				"C:/Program Files/VideoLAN/VLC");
-		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		try {
+			Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
 	}
 
 	public void playSongs(ArrayList<AudioVid> songs, int index) {
@@ -107,11 +136,23 @@ public class AudioPlayer extends HBox {
 	}
 
 	public void playSong(AudioVid av) {
-		songLabel.setText(av.getTitle());
-		System.err.println("Songlabel set");
-		main.setTitle(av.getTitle());
 		currentSong = av;
-		player.playMedia(currentSong.getMediaURL());
+		Platform.runLater(new Runnable() {
+
+			public void run() {
+				System.out.println("setting songdisp");
+				try {
+
+					songDisplay.setAudioVid(currentSong);
+					main.setTitle(currentSong.getTitle());
+					player.playMedia(currentSong.getMediaURL());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		System.err.println("Songlabel set");
+
 		System.out.println("Now playing: " + av.getMediaURL());
 	}
 
