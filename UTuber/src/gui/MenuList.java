@@ -57,6 +57,8 @@ public class MenuList extends VBox {
 				});
 		
 		itemList.setPrefHeight(1000);
+		
+		setMaxWidth(300);
 
 		getChildren().add(itemList);
 		getChildren().add(songDisplay);

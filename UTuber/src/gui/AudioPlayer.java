@@ -154,6 +154,8 @@ public class AudioPlayer extends HBox {
 		System.err.println("Songlabel set");
 
 		System.out.println("Now playing: " + av.getMediaURL());
+		player.setVolume(100);
+		
 	}
 
 	public void playNext() {

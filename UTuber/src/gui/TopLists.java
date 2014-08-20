@@ -21,6 +21,7 @@ public class TopLists extends HBox {
 		getChildren().add(left);
 		getChildren().add(right);
 		
+		
 		Platform.runLater(new Runnable() {
 			
 			public void run() {

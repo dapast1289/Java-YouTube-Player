@@ -2,6 +2,7 @@ package gui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -21,14 +22,12 @@ public class SongDisplay extends VBox{
 	
 
 	public SongDisplay() {
-		super();
-		setMinHeight(200);
+		super(5);
+		setMinHeight(300);
 		songDisplay = this;
 		getStyleClass().add("songdisplay");
 		imageView = new ImageView();
-		imageView.setX(200);
-		imageView.setY(200);
-		
+		imageView.setFitWidth(240);
 		songLabel = new Label("-");
 		songLabel.setAlignment(Pos.BASELINE_CENTER);
 		songLabel.getStyleClass().add("song");
@@ -43,6 +42,7 @@ public class SongDisplay extends VBox{
 		getChildren().add(songLabel);
 		getChildren().add(artistLabel);
 		getChildren().add(imageView);
+		
 	}
 	
 	public void setAudioVid(AudioVid av) {
@@ -58,6 +58,7 @@ public class SongDisplay extends VBox{
 		}
 		songLabel.setText(song);
 		artistLabel.setText(artist);
+		imageView.setImage(new Image(av.getIconURL()));
 	}
 	
 	public static String trim(String s) {
