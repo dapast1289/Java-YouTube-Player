@@ -1,25 +1,29 @@
 package base;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class YT_API {
 
 	public static void main(String[] args) {
 		ArrayList<AudioVid> s = search("charlie the unicorn", 5);
-		for (SearchVid searchVid : s) {
-			System.out.println(searchVid.title);
+		for (AudioVid audioVid : s) {
+			System.out.println(audioVid.title);
+			System.out.println(audioVid.id);
+			System.out.println(audioVid.getIconURL());
 		}
 
 	}
 
-	final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&q=";
-	final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&relatedToVideoId=";
+	final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title,thumbnails(medium)))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&q=";
+	final static String YOUTUBE_RELATED = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title,thumbnails(medium)))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&relatedToVideoId=";
 
 	public static ArrayList<AudioVid> search(String search, int numberOfItems) {
 		return parseAPIJson(getSearchUrl(search, numberOfItems));
@@ -37,30 +41,29 @@ public class YT_API {
 
 	public static ArrayList<AudioVid> parseAPIJson(URL url) {
 		ArrayList<AudioVid> searchArray = new ArrayList<AudioVid>();
+		String title, id, iconURL;
 
-		String title = null;
-		String id = null;
+		String searchResultJSON = Extractor.httpToString(url);
 
-		String searchResultJSON = Extractor.urlToString(url);
-		String[] parts = searchResultJSON.split("\"id\": \\{");
+		ObjectMapper mapper = new ObjectMapper();
+		try {
 
-		Pattern idPattern = Pattern.compile("\"videoId\": \"(.*)\"\\s+\\}");
-		Matcher idMatcher = null;
-		Pattern titlePattern = Pattern.compile("\"title\": \"(.*)\"\\s+\\}");
-		Matcher titleMatcher = null;
+			JsonNode items = mapper.readTree(searchResultJSON).get("items");
+			JsonNode vidItem;
 
-		for (String string : parts) {
-			idMatcher = idPattern.matcher(string);
-			if (idMatcher.find()) {
-				id = idMatcher.group(1);
-				titleMatcher = titlePattern.matcher(string);
-				if (titleMatcher.find()) {
-					title = titleMatcher.group(1).replaceAll("\\\\\"", "\"");
+			for (int i = 0; i < items.size(); i++) {
+				vidItem = items.get(i);
 
-					searchArray.add(new AudioVid(id, title, null));
-				}
+				id = vidItem.get("id").get("videoId").asText();
+				title = vidItem.get("snippet").get("title").asText();
+				iconURL = vidItem.get("snippet").get("thumbnails")
+						.get("medium").get("url").asText();
+				searchArray.add(new AudioVid(id, title, null, iconURL));
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
 		return searchArray;
 	}
 

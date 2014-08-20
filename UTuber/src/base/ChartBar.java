@@ -87,7 +87,7 @@ public class ChartBar extends JPanel implements ActionListener {
 		System.out.println("url: " + url);
 
 		try {
-			String trackListJSON = Extractor.urlToString(new URL(url));
+			String trackListJSON = Extractor.httpToString(new URL(url));
 
 			Gson gson = new Gson();
 
@@ -103,7 +103,7 @@ public class ChartBar extends JPanel implements ActionListener {
 	public String[] jsonUrlToStringArray(String url) {
 		String[] countries = null;
 		try {
-			String countryList = Extractor.urlToString(new URL(url));
+			String countryList = Extractor.httpToString(new URL(url));
 			Gson gson = new Gson();
 			countries = gson.fromJson(countryList, String[].class);
 			System.out.println(countries);
@@ -121,7 +121,7 @@ public class ChartBar extends JPanel implements ActionListener {
 		ArrayList<AudioVid> tracks = new ArrayList<AudioVid>();
 		for (Track track : atl) {
 			tracks.add(new AudioVid(null, track.getTrack_name() + " - "
-					+ track.getArtist_name(), null));
+					+ track.getArtist_name(), null, null));
 		}
 
 		parent.setData(tracks);

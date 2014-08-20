@@ -2,6 +2,7 @@ package base;
 
 public class AudioVid extends SearchVid {
 	String mediaURL;
+	String iconURL;
 
 	public String getMediaURL() {
 		if (!hasMediaURL()) {
@@ -15,9 +16,10 @@ public class AudioVid extends SearchVid {
 		this.mediaURL = mediaURL;
 	}
 
-	public AudioVid(String id, String title, String mediaURL) {
+	public AudioVid(String id, String title, String mediaURL, String iconURL) {
 		super(id, title);
 		this.mediaURL = mediaURL;
+		this.iconURL = iconURL;
 	}
 
 	public AudioVid(SearchVid sv, String mediaURL) {
@@ -53,5 +55,15 @@ public class AudioVid extends SearchVid {
 	public boolean hasMediaURL() {
 		return mediaURL != null;
 	}
+
+	public String getIconURL() {
+		return iconURL;
+	}
+
+	public void setIconURL(String iconURL) {
+		this.iconURL = iconURL;
+	}
+	
+	
 
 }

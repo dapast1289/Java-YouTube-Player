@@ -26,6 +26,9 @@ public class SongDisplay extends VBox{
 		songDisplay = this;
 		getStyleClass().add("songdisplay");
 		imageView = new ImageView();
+		imageView.setX(200);
+		imageView.setY(200);
+		
 		songLabel = new Label("-");
 		songLabel.setAlignment(Pos.BASELINE_CENTER);
 		songLabel.getStyleClass().add("song");
@@ -39,19 +42,29 @@ public class SongDisplay extends VBox{
 		
 		getChildren().add(songLabel);
 		getChildren().add(artistLabel);
+		getChildren().add(imageView);
 	}
 	
 	public void setAudioVid(AudioVid av) {
 		title = av.getTitle();
 		if (title.contains(" - ")) {
 			artist = title.split(" - ")[0];
+			artist = trim(artist);
 			song = title.split(" - ")[1];
+			song = trim(song);
 		} else {
 			song = title;
 			artist = "";
 		}
 		songLabel.setText(song);
 		artistLabel.setText(artist);
+	}
+	
+	public static String trim(String s) {
+		if (s.length() > 40) {
+			return s.substring(0,40);
+		}
+		return s;
 	}
 	
 	public static SongDisplay getInstance() {

@@ -225,7 +225,7 @@ public class Extractor {
 			if (debug)
 				System.out.println("signature: " + sig);
 			URL pURL = new URL(playerURLString);
-			playerPage = urlToString(pURL);
+			playerPage = httpToString(pURL);
 
 			methodName = regBetween("signature=", "..", "", playerPage);
 			if (debug)
@@ -337,7 +337,7 @@ public class Extractor {
 			e.printStackTrace();
 			return null;
 		}
-		String parsedSite = urlToString(url);
+		String parsedSite = httpToString(url);
 		String streamMap = getStreamMap(parsedSite);
 		String playerURL = getPlayerURL(parsedSite);
 		if (!playerURL.contains("https:")) {
@@ -426,6 +426,45 @@ public class Extractor {
 		return null;
 	}
 
+	public static String httpToString(URL url) {
+		try {
+			String content;
+			HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					urlcon.getInputStream()));
+			StringBuffer buffer = new StringBuffer();
+			int read;
+			char[] chars = new char[1024];
+			while ((read = reader.read(chars)) != -1)
+				buffer.append(chars, 0, read);
+			content = buffer.toString();
+			return content;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static String httpsToString(URL url) {
+		try {
+			String content;
+			HttpsURLConnection scon = (HttpsURLConnection) url.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					scon.getInputStream()));
+			StringBuffer buffer = new StringBuffer();
+			int read;
+			char[] chars = new char[1024];
+			while ((read = reader.read(chars)) != -1)
+				buffer.append(chars, 0, read);
+			content = buffer.toString();
+
+			return content;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public static String urlToString(URL url) {
 		BufferedReader reader = null;
 		try {
@@ -436,18 +475,8 @@ public class Extractor {
 						+ urlcon.getResponseMessage());
 
 				String newUrl = urlcon.getHeaderField("Location");
-				System.out.println(newUrl);
 				url = new URL(newUrl);
-				HttpsURLConnection scon = (HttpsURLConnection) url
-						.openConnection();
-				reader = new BufferedReader(new InputStreamReader(
-						scon.getInputStream()));
-				StringBuffer buffer = new StringBuffer();
-				int read;
-				char[] chars = new char[1024];
-				while ((read = reader.read(chars)) != -1)
-					buffer.append(chars, 0, read);
-				content = buffer.toString();
+				return httpsToString(url);
 			} else {
 				reader = new BufferedReader(new InputStreamReader(
 						urlcon.getInputStream()));
@@ -464,14 +493,6 @@ public class Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 

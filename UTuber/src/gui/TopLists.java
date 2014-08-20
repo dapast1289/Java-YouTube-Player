@@ -1,24 +1,43 @@
 package gui;
 
+import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 import base.Charter;
 
 public class TopLists extends HBox {
+	SongList left;
+	SongList right;
 
 	public TopLists() {
 		super();
-		SongList left = new SongList();
-		left.setSongs(Charter.getMostStreamed());
+		left = new SongList();
 		left.setPrefWidth(10000);
 
-		SongList right = new SongList();
-		right.setSongs(Charter.getMostShared());
+		right = new SongList();
 		right.setPrefWidth(10000);
-		
+
 		setMaxWidth(10000);
-		
+
 		getChildren().add(left);
 		getChildren().add(right);
+		
+		Platform.runLater(new Runnable() {
+			
+			public void run() {
+				setSongs();
+			}
+		});
+	}
+
+	public void setSongs() {
+		Platform.runLater(new Runnable() {
+
+			public void run() {
+				left.setSongs(Charter.getMostStreamed());
+				right.setSongs(Charter.getMostShared());
+			}
+		});
+
 	}
 
 }

@@ -1,74 +1,82 @@
 package base;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Charter extends JScrollPane {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -1013963011447988481L;
 
 	public static void main(String[] args) {
-		getMostShared();
+		ArrayList<AudioVid> a = getMostShared();
+		for (AudioVid audioVid : a) {
+			System.out.println(audioVid.getTitle());
+			System.out.println(audioVid.getIconURL() + "\n");
+		}
 		getMostStreamed();
 	}
-	
 
 	public static ArrayList<AudioVid> getMostShared() {
 		try {
-			URL chartsURL = new URL("http://charts.spotify.com/api/charts/most_shared/global/latest");
+			URL chartsURL = new URL(
+					"http://charts.spotify.com/api/charts/most_shared/global/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public static ArrayList<AudioVid> getMostStreamed() {
 		try {
-			URL chartsURL = new URL("http://charts.spotify.com/api/charts/most_streamed/global/latest");
+			URL chartsURL = new URL(
+					"http://charts.spotify.com/api/charts/most_streamed/global/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public static ArrayList<AudioVid> parseCharts(URL chartsURL) {
+		ArrayList<AudioVid> array = new ArrayList<AudioVid>();
+		String data = Extractor.httpToString(chartsURL);
+		System.out.println(data);
+		ObjectMapper mapper = new ObjectMapper();
+
 		try {
-			ArrayList<AudioVid> array = new ArrayList<AudioVid>();
-			URLConnection urlConnection = chartsURL.openConnection();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					urlConnection.getInputStream()));
-			String s = "";
-			String name = "";
-			String[] splitString;
-			while ((s = in.readLine())!= null) {
-				splitString = s.split("\\{");
-				for (String string : splitString) {
-					string = string.replaceAll(".*?track_name\"\\:\"(.*?)\".*artist_name\"\\:\"(.*?)\".*", "$1;$2");
-					String[] songArtist = string.split(";");
-					if (songArtist.length == 2) {
-						name = StringEscapeUtils.unescapeJson(songArtist[1]) + " - " + StringEscapeUtils.unescapeJson(songArtist[0]);
-						array.add(new AudioVid(null, name, null));
-					}
-				}
+			JsonNode tracks = mapper.readTree(data).get("tracks");
+			JsonNode track;
+			String trackName, artistName, iconURL, name;
+
+			for (int i = 0; i < tracks.size(); i++) {
+				track = tracks.get(i);
+				trackName = track.get("track_name").asText();
+				artistName = track.get("artist_name").asText();
+				iconURL = track.get("artwork_url").asText();
+				name = StringEscapeUtils.unescapeJson(artistName) + " - "
+						+ StringEscapeUtils.unescapeJson(trackName);
+				array.add(new AudioVid(null, name, null, iconURL));
 			}
-			return array;
-		} catch (Exception e) {
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+
+		return array;
+
 	}
 
 }
