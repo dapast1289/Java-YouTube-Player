@@ -29,7 +29,7 @@ public class Charter extends JScrollPane {
 	public static ArrayList<AudioVid> getMostShared() {
 		try {
 			URL chartsURL = new URL(
-					"http://charts.spotify.com/api/charts/most_shared/global/latest");
+					"http://charts.spotify.com/api/tracks/most_viral/global/daily/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class Charter extends JScrollPane {
 	public static ArrayList<AudioVid> getMostStreamed() {
 		try {
 			URL chartsURL = new URL(
-					"http://charts.spotify.com/api/charts/most_streamed/global/latest");
+					"http://charts.spotify.com/api/tracks/most_streamed/global/daily/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
