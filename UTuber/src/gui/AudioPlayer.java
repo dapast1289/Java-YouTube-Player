@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -8,17 +9,10 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBoxBuilder;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.component.AudioMediaPlayerComponent;
@@ -26,6 +20,7 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import base.AudioVid;
+import base.Extractor;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -40,6 +35,7 @@ public class AudioPlayer extends HBox {
 	private Main main = Main.getInstance();
 	private Button nextButton;
 	private Button playPauseButton;
+	private Button openInVlcButton;
 	private Slider slider;
 	private boolean isDragging = false;
 	private final ScheduledExecutorService sliderUpdater = Executors
@@ -90,6 +86,22 @@ public class AudioPlayer extends HBox {
 				}
 			}
 		});
+		
+		openInVlcButton = new Button("Open in vlc");
+		openInVlcButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				String stream = Extractor.extract(currentSong).getDecodedStream(0);
+				try {
+					player.pause();
+					System.out.println("Opening stream: " + stream);
+					Runtime.getRuntime().exec("vlc " + stream);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
 		slider = new Slider(0f, 1f, 0f);
 		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L,
@@ -115,6 +127,7 @@ public class AudioPlayer extends HBox {
 
 		getChildren().add(playPauseButton);
 		getChildren().add(nextButton);
+		getChildren().add(openInVlcButton);
 		getChildren().add(slider);
 	}
 

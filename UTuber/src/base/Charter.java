@@ -51,7 +51,6 @@ public class Charter extends JScrollPane {
 	public static ArrayList<AudioVid> parseCharts(URL chartsURL) {
 		ArrayList<AudioVid> array = new ArrayList<AudioVid>();
 		String data = Extractor.httpToString(chartsURL);
-		System.out.println(data);
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {

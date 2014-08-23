@@ -32,10 +32,12 @@ public class SongDisplay extends VBox{
 		songLabel.setAlignment(Pos.BASELINE_CENTER);
 		songLabel.getStyleClass().add("song");
 		songLabel.setFont(Font.font("arial", FontWeight.BOLD, 16));
+		songLabel.setWrapText(true);
 		artistLabel = new Label("-");
 		artistLabel.setAlignment(Pos.BASELINE_CENTER);
 		artistLabel.getStyleClass().add("artist");
 		artistLabel.setFont(Font.font("arial", FontWeight.NORMAL, 14));
+		artistLabel.setWrapText(true);
 		
 		setAlignment(Pos.BASELINE_CENTER);
 		
@@ -62,8 +64,8 @@ public class SongDisplay extends VBox{
 	}
 	
 	public static String trim(String s) {
-		if (s.length() > 40) {
-			return s.substring(0,40);
+		if (s.length() > 30) {
+			return s.substring(0,30) + "\n" + s.substring(30);
 		}
 		return s;
 	}

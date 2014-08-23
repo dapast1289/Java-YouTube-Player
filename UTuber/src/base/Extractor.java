@@ -35,8 +35,8 @@ public class Extractor {
 		ArrayList<AudioVid> vid = YT_API.search("one republic", 1);
 		System.out.println(vid.get(0).getUrl());
 
-		VidPage sv = Extractor.extractFmt(vid.get(0));
-		System.err.println(sv.getAudioStream());
+		VidPage sv = Extractor.extract(vid.get(0));
+		System.err.println(sv.getDecodedStream(0));
 	}
 
 	public static VidPage searchVidPage(String search) {
@@ -337,7 +337,8 @@ public class Extractor {
 			e.printStackTrace();
 			return null;
 		}
-		String parsedSite = httpToString(url);
+		String parsedSite = urlToString(url);
+		
 		String streamMap = getStreamMap(parsedSite);
 		String playerURL = getPlayerURL(parsedSite);
 		if (!playerURL.contains("https:")) {
@@ -397,6 +398,7 @@ public class Extractor {
 		} catch (Exception e) {
 			System.err.println("No fmt stream map matched ");
 			e.printStackTrace();
+			System.err.println("in: " + youtubePage);
 			return null;
 		}
 	}
