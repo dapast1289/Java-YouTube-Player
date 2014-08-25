@@ -42,7 +42,7 @@ public class AudioVid extends SearchVid {
 		}
 	}
 	
-	public void generateURL() {
+	private void generateURL() {
 		if (url != null) {
 			return;
 		}

@@ -46,10 +46,6 @@ public class AudioPlayer extends HBox {
 	public static AudioPlayer getInstance() {
 		return audioPlayer;
 	}
-	
-	public static void main(String[] args) {
-		AudioPlayer ap = new AudioPlayer();
-	}
 
 	public AudioPlayer() {
 		super();
@@ -140,8 +136,8 @@ public class AudioPlayer extends HBox {
 		// "C:/Program Files/VideoLAN/VLC");
 		// NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
 		// "C:/Users/Jaap/git/Java-YouTube-Player/UTuber/VLC");
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-				"VLC");
+//		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
+//				"VLC");
 		try {
 			Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		} catch (Exception e) {

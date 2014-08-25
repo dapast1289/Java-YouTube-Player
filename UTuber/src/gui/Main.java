@@ -32,11 +32,11 @@ public class Main extends Application {
 		
 		audioPlayer = new AudioPlayer();
 		menuList = new MenuList();
-//		topBar = new TopBar();
+		topBar = new TopBar();
 
 		root.setLeft(menuList);
 		root.setBottom(audioPlayer);
-//		root.setTop(topBar);
+		root.setTop(topBar);
 
 		scene = new Scene(root, 1200, 800);
 		scene.getStylesheets().add("style.css");
