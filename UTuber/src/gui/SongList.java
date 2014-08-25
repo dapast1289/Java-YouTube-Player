@@ -26,9 +26,20 @@ public class SongList extends ListView<String> {
 	public void setSongs(ArrayList<AudioVid> songs) {
 		songList = songs;
 		getItems().clear();
+		
+		String title;
 		for (AudioVid audioVid : songs) {
-			getItems().add(audioVid.getTitle());
+			title = audioVid.getTitle();
+			title = trim(title, 60);
+			getItems().add(title);
 		}
+	}
+	
+	public static String trim(String s, int n) {
+		if (s.length() > n) {
+			s = s.substring(0, n) + "…";
+		}
+		return s;
 	}
 
 	public ArrayList<AudioVid> getSongList() {
