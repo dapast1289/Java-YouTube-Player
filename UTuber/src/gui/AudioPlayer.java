@@ -1,6 +1,5 @@
 package gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,7 +19,6 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import base.AudioVid;
-import base.Extractor;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -35,7 +33,7 @@ public class AudioPlayer extends HBox {
 	private Main main = Main.getInstance();
 	private Button nextButton;
 	private Button playPauseButton;
-	private Button openInVlcButton;
+//	private Button openInVlcButton;
 	private Slider slider;
 	private boolean isDragging = false;
 	private final ScheduledExecutorService sliderUpdater = Executors
@@ -86,22 +84,22 @@ public class AudioPlayer extends HBox {
 				}
 			}
 		});
-		
-		openInVlcButton = new Button("Open in vlc");
-		openInVlcButton.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent arg0) {
-				String stream = Extractor.extract(currentSong).getDecodedStream(0);
-				try {
-					player.pause();
-					System.out.println("Opening stream: " + stream);
-					Runtime.getRuntime().exec("vlc " + stream);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		
+//		openInVlcButton = new Button("Open in vlc");
+//		openInVlcButton.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent arg0) {
+//				String stream = Extractor.extract(currentSong).getDecodedStream(0);
+//				try {
+//					player.pause();
+//					System.out.println("Opening stream: " + stream);
+//					Runtime.getRuntime().exec("vlc " + stream);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 
 		slider = new Slider(0f, 1f, 0f);
 		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L,
@@ -127,17 +125,15 @@ public class AudioPlayer extends HBox {
 
 		getChildren().add(playPauseButton);
 		getChildren().add(nextButton);
-		getChildren().add(openInVlcButton);
+//		getChildren().add(openInVlcButton);
 		getChildren().add(slider);
 	}
 
 	public void initVLC() {
-		// NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-		// "C:/Program Files/VideoLAN/VLC");
-		// NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-		// "C:/Users/Jaap/git/Java-YouTube-Player/UTuber/VLC");
-//		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-//				"VLC");
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
+				"classes/VLC");
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
+				"VLC");
 		try {
 			Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		} catch (Exception e) {
