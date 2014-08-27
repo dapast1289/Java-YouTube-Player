@@ -29,7 +29,7 @@ public class Charter extends JScrollPane {
 	public static ArrayList<AudioVid> getMostShared() {
 		try {
 			URL chartsURL = new URL(
-					"http://charts.spotify.com/api/tracks/most_viral/global/daily/latest");
+					"http://charts.spotify.com/api/tracks/most_viral/global/weekly/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -66,6 +66,8 @@ public class Charter extends JScrollPane {
 				name = StringEscapeUtils.unescapeJson(artistName) + " - "
 						+ StringEscapeUtils.unescapeJson(trackName);
 				array.add(new AudioVid(null, name, null, iconURL));
+				
+				System.out.println(name);
 			}
 
 		} catch (JsonProcessingException e) {

@@ -26,6 +26,7 @@ import javax.script.ScriptEngineManager;
 public class Extractor {
 
 	final static String fmt = "A\", \"url_encoded_fmt_stream_map\": \"type=vi\"";
+	final static ScriptEngine se = new ScriptEngineManager().getEngineByName("javascript");
 
 	static Long time;
 
@@ -187,7 +188,6 @@ public class Extractor {
 
 		File cacheFile = new File("cache/" + playerID);
 
-		ScriptEngine se = null;
 		Invocable inv = null;
 		String actualMethod = "";
 		String methodName = "";
@@ -202,7 +202,6 @@ public class Extractor {
 				cacheMethod = fr.readLine();
 				methodName = fr.readLine();
 				fr.close();
-				se = new ScriptEngineManager().getEngineByName("javascript");
 				inv = (Invocable) se;
 				se.eval(cacheMethod);
 				if (debug)
@@ -261,7 +260,6 @@ public class Extractor {
 
 			}
 
-			se = new ScriptEngineManager().getEngineByName("javascript");
 			inv = (Invocable) se;
 			se.eval(actualMethod);
 			System.out.println(methodName + " - " + actualMethod);
