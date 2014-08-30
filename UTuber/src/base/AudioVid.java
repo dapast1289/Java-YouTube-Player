@@ -6,7 +6,6 @@ public class AudioVid extends SearchVid {
 
 	public String getMediaURL() {
 		if (!hasMediaURL()) {
-			System.out.println("Generating MediaURL: " + title);
 			generateMediaURL();
 		}
 		return mediaURL;

@@ -66,8 +66,6 @@ public class Charter extends JScrollPane {
 				name = StringEscapeUtils.unescapeJson(artistName) + " - "
 						+ StringEscapeUtils.unescapeJson(trackName);
 				array.add(new AudioVid(null, name, null, iconURL));
-				
-				System.out.println(name);
 			}
 
 		} catch (JsonProcessingException e) {

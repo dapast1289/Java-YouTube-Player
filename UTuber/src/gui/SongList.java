@@ -13,12 +13,11 @@ public class SongList extends ListView<String> {
 	ArrayList<AudioVid> songList;
 	AudioPlayer audioPlayer = AudioPlayer.getInstance();
 	int current;
-//	String currentTitle;
 
 	public SongList() {
 		super();
 		
-		getStyleClass().add("list");
+		getStyleClass().add("songlist");
 		setPrefWidth(500);
 
 		addMouseListener();
@@ -36,7 +35,6 @@ public class SongList extends ListView<String> {
 			getItems().add(title);
 		}
 		current = -1;
-//		currentTitle = null;
 	}
 	
 	public static String trim(String s, int n) {
@@ -59,7 +57,6 @@ public class SongList extends ListView<String> {
 			setCurrent(0);
 			return;
 		}
-		System.out.println("Next : " + i);
 		if ( i >= 0) {
 			getSelectionModel().select(i);
 		}

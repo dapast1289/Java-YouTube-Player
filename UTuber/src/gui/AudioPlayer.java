@@ -293,7 +293,13 @@ public class AudioPlayer extends HBox {
 
 			public void finished(MediaPlayer mediaPlayer) {
 				System.out.println("Finished");
-				playNext();
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						playNext();
+					}
+				});
 			}
 
 			public void error(MediaPlayer mediaPlayer) {

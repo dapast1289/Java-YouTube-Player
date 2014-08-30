@@ -24,8 +24,6 @@ public class MenuList extends VBox {
 
 	public MenuList() {
 		super();
-		getStyleClass().add("list");
-
 		ArrayList<String> menuElements = new ArrayList<String>();
 		menuElements.add(TOP_LISTS);
 		menuElements.add(RADIO);
