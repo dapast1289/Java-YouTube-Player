@@ -42,12 +42,12 @@
 	-fx-text-fill: white;
 }
 
-.songlist .list-cell:filled:selected:focused {
+.songlist .list-cell:filled:selected {
 	-fx-background-color: #941F2E;
 }
 
-.songlist .list-cell:filled:selected {
-	-fx-background-color: #941F2E;
+.songlist .list-cell:filled:selected:hover {
+	-fx-background-color: #A42F3E;
 }
 
 .list-cell {
