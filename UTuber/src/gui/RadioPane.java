@@ -51,7 +51,7 @@ public class RadioPane extends VBox {
 					ArrayList<AudioVid> list = YT_API.getRelated(origin.id, 50);
 					
 					songList.setSongs(list);
-					audioPlayer.playSongs(list, 0);
+					audioPlayer.playSongs(songList, 0);
 					
 				}
 			}

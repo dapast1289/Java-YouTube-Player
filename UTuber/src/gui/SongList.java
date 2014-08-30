@@ -12,6 +12,8 @@ public class SongList extends ListView<String> {
 
 	ArrayList<AudioVid> songList;
 	AudioPlayer audioPlayer = AudioPlayer.getInstance();
+	int current;
+//	String currentTitle;
 
 	public SongList() {
 		super();
@@ -33,6 +35,8 @@ public class SongList extends ListView<String> {
 			title = trim(title, 60);
 			getItems().add(title);
 		}
+		current = -1;
+//		currentTitle = null;
 	}
 	
 	public static String trim(String s, int n) {
@@ -49,14 +53,40 @@ public class SongList extends ListView<String> {
 	public int selInd() {
 		return getSelectionModel().getSelectedIndex();
 	}
+	
+	public void setCurrent(int i) {
+		if (i >= getItems().size()) {
+			setCurrent(0);
+			return;
+		}
+		System.out.println("Next : " + i);
+		if ( i >= 0) {
+			getSelectionModel().select(i);
+		}
+		current = i;
+	}
+	
+	public void next() {
+		setCurrent(current + 1);
+	}
+	
+	public void clearCurrent() {
+		getSelectionModel().clearSelection();
+		current = -1;
+	}
 
 	public void addMouseListener() {
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent mouseEvent) {
 				if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-					if (mouseEvent.getClickCount() == 2) {
-						audioPlayer.playSongs(songList, selInd());
+					if (mouseEvent.getClickCount() == 1) {
+						int i = selInd();
+						if (i == current) {
+							return;
+						}
+						audioPlayer.playSongs((SongList) mouseEvent.getSource(), i);
+						setCurrent(i);
 					}
 				}
 			}

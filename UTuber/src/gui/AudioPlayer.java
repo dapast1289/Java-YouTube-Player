@@ -27,7 +27,8 @@ public class AudioPlayer extends HBox {
 
 	private AudioMediaPlayerComponent vlc;
 	private MediaPlayer player;
-	private ArrayList<AudioVid> songList;
+	private ArrayList<AudioVid> songArray;
+	private SongList songList;
 	private int current;
 	private AudioVid currentSong;
 	private Main main = Main.getInstance();
@@ -129,7 +130,7 @@ public class AudioPlayer extends HBox {
 		getChildren().add(slider);
 	}
 
-	public void initVLC() {
+	private void initVLC() {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
 				"classes/VLC");
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
@@ -142,18 +143,21 @@ public class AudioPlayer extends HBox {
 		}
 	}
 
-	public void playSongs(ArrayList<AudioVid> songs, int index) {
-		songList = songs;
-		playSong(songList.get(index));
+	public void playSongs(SongList sl, int index) {
+		if (songList != null) {
+			songList.clearCurrent();
+		}
+		songList = sl;
+		songArray = sl.getSongList();
+		playSong(songArray.get(index));
 		current = index;
 	}
 
-	public void playSong(AudioVid av) {
+	private void playSong(AudioVid av) {
 		currentSong = av;
 		Platform.runLater(new Runnable() {
 
 			public void run() {
-				System.out.println("setting songdisp");
 				try {
 
 					songDisplay.setAudioVid(currentSong);
@@ -164,7 +168,6 @@ public class AudioPlayer extends HBox {
 				}
 			}
 		});
-		System.err.println("Songlabel set");
 
 		System.out.println("Now playing: " + av.getMediaURL());
 		player.setVolume(100);
@@ -172,19 +175,20 @@ public class AudioPlayer extends HBox {
 	}
 
 	public void playNext() {
+		songList.next();
 		current++;
-		if (current >= songList.size()) {
+		if (current >= songArray.size()) {
 			current = 0;
 		}
-		System.out.println("Playing next: " + songList.get(current).getTitle());
-		playSong(songList.get(current));
+		System.out.println("Playing next: " + songArray.get(current).getTitle());
+		playSong(songArray.get(current));
 	}
 
 	public void stop() {
 		player.stop();
 	}
 
-	public void addMPListener(MediaPlayer mp) {
+	private void addMPListener(MediaPlayer mp) {
 		mp.addMediaPlayerEventListener(new MediaPlayerEventListener() {
 
 			public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
