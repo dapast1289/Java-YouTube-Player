@@ -170,7 +170,7 @@ public class AudioPlayer extends HBox {
 		});
 
 		System.out.println("Now playing: " + av.getMediaURL());
-		player.setVolume(100);
+//		player.setVolume(100);
 
 	}
 

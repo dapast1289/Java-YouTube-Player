@@ -2,16 +2,18 @@ package gui;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
-import base.AudioVid;
-import base.SearchVid;
-import base.YT_API;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import base.AudioVid;
+import base.SearchVid;
+import base.YT_API;
 
 public class RadioPane extends VBox {
 
@@ -49,6 +51,9 @@ public class RadioPane extends VBox {
 
 					SearchVid origin = YT_API.search(tf.getText(), 1).get(0);
 					ArrayList<AudioVid> list = YT_API.getRelated(origin.id, 50);
+					
+					long seed = System.nanoTime();
+					Collections.shuffle(list, new Random(seed));
 					
 					songList.setSongs(list);
 					audioPlayer.playSongs(songList, 0);
