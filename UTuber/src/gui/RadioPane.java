@@ -49,11 +49,13 @@ public class RadioPane extends VBox {
 				if (e.getCode() == KeyCode.ENTER && !tf.getText().isEmpty()) {
 					System.out.println("Starting Radio: " + tf.getText());
 
-					SearchVid origin = YT_API.search(tf.getText(), 1).get(0);
-					ArrayList<AudioVid> list = YT_API.getRelated(origin.id, 50);
+					AudioVid origin = YT_API.search(tf.getText(), 1).get(0);
+					ArrayList<AudioVid> extraList = YT_API.getRelated(origin.id, 50);
 					
-					long seed = System.nanoTime();
-					Collections.shuffle(list, new Random(seed));
+					Collections.shuffle(extraList, new Random());
+					ArrayList<AudioVid> list = new ArrayList<AudioVid>();
+					list.add(origin);
+					list.addAll(extraList);
 					
 					songList.setSongs(list);
 					audioPlayer.playSongs(songList, 0);

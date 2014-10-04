@@ -14,7 +14,7 @@ public class AudioVid extends SearchVid {
 	HBox box;
 	ImageView imageView;
 	
-	public final static int IMAGE_VIEW_SIZE = 80;
+	public final static int IMAGE_VIEW_SIZE = 60;
 
 	public String getMediaURL() {
 		if (!hasMediaURL()) {
@@ -44,24 +44,26 @@ public class AudioVid extends SearchVid {
 		if (box != null) {
 			return box;
 		}
-		System.out.println("Making box for " + getTitle());
 		imageView = new ImageView(iconURL);
 		imageView.setFitHeight(IMAGE_VIEW_SIZE);
 		imageView.setFitWidth(IMAGE_VIEW_SIZE);
-		Label titleLabel = new Label(title.split("-")[0]);
-		titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-		titleLabel.setTextFill(Paint.valueOf("#EEE"));
-		Label artistLabel;
+		Label artistLabel = new Label(title.split("-")[0].trim());
+		artistLabel.setFont(Font.font("Arial", 20));
+		artistLabel.setTextFill(Paint.valueOf("#CCC"));
+		Label titleLabel;
 		VBox labels;
 		try {
-			artistLabel = new Label(title.split("-")[1]);
-			artistLabel.setFont(Font.font("Arial", 20));
-			artistLabel.setTextFill(Paint.valueOf("#CCC"));
+			titleLabel = new Label(title.split("-")[1].trim());
+			titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+			titleLabel.setTextFill(Paint.valueOf("#EEE"));
 			labels = new VBox(5, titleLabel, artistLabel);
 		} catch (Exception e) {
+			titleLabel = new Label(title.split("-")[0].trim());
+			titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+			titleLabel.setTextFill(Paint.valueOf("#EEE"));
 			labels = new VBox(5, titleLabel);
 		}
-		box = new HBox(5, imageView, labels);
+		box = new HBox(12, imageView, labels);
 		return box;
 	}
 

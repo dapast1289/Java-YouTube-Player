@@ -56,7 +56,7 @@ public class Main extends Application {
 	}
 	
 	public void clearMenuSelection() {
-		menuList.getItemList().getSelectionModel().clearAndSelect(-1);
+		menuList.getItemList().getSelectionModel().clearSelection();
 	}
 
 	public void setCenter(Node n) {
