@@ -10,7 +10,6 @@ import base.AudioVid;
 
 public class SongDisplay extends VBox{
 	
-	private AudioVid audioVid;
 	private ImageView imageView;
 	private Label songLabel;
 	private Label artistLabel;
@@ -22,7 +21,6 @@ public class SongDisplay extends VBox{
 
 	public SongDisplay() {
 		super(5);
-//		setMinHeight(300);
 		songDisplay = this;
 		getStyleClass().add("songdisplay");
 		imageView = new ImageView();

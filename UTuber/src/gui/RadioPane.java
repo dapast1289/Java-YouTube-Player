@@ -12,7 +12,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import base.AudioVid;
-import base.SearchVid;
 import base.YT_API;
 
 public class RadioPane extends VBox {
