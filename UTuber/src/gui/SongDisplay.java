@@ -23,11 +23,12 @@ public class SongDisplay extends VBox{
 
 	public SongDisplay() {
 		super(5);
-		setMinHeight(300);
+//		setMinHeight(300);
 		songDisplay = this;
 		getStyleClass().add("songdisplay");
 		imageView = new ImageView();
 		imageView.setFitWidth(240);
+		imageView.setPreserveRatio(true);
 		songLabel = new Label("-");
 		songLabel.setAlignment(Pos.BASELINE_CENTER);
 		songLabel.getStyleClass().add("song");
@@ -44,7 +45,6 @@ public class SongDisplay extends VBox{
 		getChildren().add(songLabel);
 		getChildren().add(artistLabel);
 		getChildren().add(imageView);
-		
 	}
 	
 	public void setAudioVid(AudioVid av) {
@@ -60,7 +60,7 @@ public class SongDisplay extends VBox{
 		}
 		songLabel.setText(song);
 		artistLabel.setText(artist);
-		imageView.setImage(new Image(av.getIconURL()));
+		imageView.setImage(av.getImageView().getImage());
 	}
 	
 	public static String trim(String s) {
