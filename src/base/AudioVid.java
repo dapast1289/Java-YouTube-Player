@@ -64,7 +64,7 @@ public class AudioVid extends SearchVid {
 			imageView = new ImageView(iconURL);
 			imageView.setFitHeight(IMAGE_VIEW_SIZE);
 			imageView.setFitWidth(IMAGE_VIEW_SIZE);
-			return new HBox(12, imageView, labels);
+			return box = new HBox(12, imageView, labels);
 		}
 		box = new HBox(12, labels);
 		return box;
