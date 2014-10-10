@@ -2,7 +2,6 @@ package gui;
 
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
-import base.Charter;
 import base.ItunesCharts;
 
 public class TopLists extends HBox {

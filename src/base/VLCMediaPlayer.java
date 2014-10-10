@@ -129,7 +129,6 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 
 					public void finished(MediaPlayer arg0) {
 						System.out.println("NEXT");
-						SidePanel.playNext();
 					}
 
 					public void error(MediaPlayer arg0) {

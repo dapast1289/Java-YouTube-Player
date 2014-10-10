@@ -8,10 +8,12 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.component.AudioMediaPlayerComponent;
@@ -52,6 +54,7 @@ public class AudioPlayer extends HBox {
 		getStyleClass().add("box");
 
 		setPrefHeight(50);
+		setAlignment(Pos.CENTER);
 
 		initVLC();
 
@@ -59,8 +62,8 @@ public class AudioPlayer extends HBox {
 		player = vlc.getMediaPlayer();
 		addMPListener(player);
 
-		nextButton = new Button("Next");
-		nextButton.setMinWidth(80);
+		nextButton = new Button("▶▶");
+		nextButton.setPrefWidth(50);
 		nextButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent arg0) {
@@ -68,19 +71,19 @@ public class AudioPlayer extends HBox {
 			}
 		});
 
-		playPauseButton = new Button("Pause");
-		playPauseButton.setMinWidth(80);
+		playPauseButton = new Button("▐▐ ");
+		playPauseButton.setPrefWidth(50);
 		playPauseButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 				Button source = (Button) event.getSource();
 				if (player.isPlaying()) {
 					player.pause();
-					source.setText("Play");
+					source.setText("▶");
 				} else {
 					if (player.isPlayable()) {
 						player.play();
-						source.setText("Pause");
+						source.setText("▐▐ ");
 					}
 				}
 			}
@@ -113,7 +116,7 @@ public class AudioPlayer extends HBox {
 				isDragging = true;
 			}
 		});
-
+		
 		slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent event) {
@@ -122,7 +125,7 @@ public class AudioPlayer extends HBox {
 				isDragging = false;
 			}
 		});
-		slider.setPrefWidth(2000);
+		setHgrow(slider, Priority.ALWAYS);
 
 		getChildren().add(playPauseButton);
 		getChildren().add(nextButton);
