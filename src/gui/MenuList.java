@@ -27,7 +27,12 @@ public class MenuList extends VBox {
 		ArrayList<String> menuElements = new ArrayList<String>();
 		menuElements.add(TOP_LISTS);
 		menuElements.add(RADIO);
-
+		
+		setPrefWidth(50);
+		setMaxWidth(50);
+		
+		getStyleClass().add("menulist");
+		
 		ObservableList<String> observableList = FXCollections
 				.observableList(menuElements);
 		itemList = new ListView<String>(observableList);
@@ -54,7 +59,7 @@ public class MenuList extends VBox {
 					}
 				});
 		
-		itemList.setPrefHeight(1000);
+		itemList.setPrefHeight(5000);
 		
 		setMaxWidth(300);
 

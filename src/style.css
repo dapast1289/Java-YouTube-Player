@@ -4,10 +4,13 @@
 	-fx-spacing: 10;
 }
 
-.content  {
-/* 	-fx-padding: 15; */
-/* 	-fx-spacing: 10; */
+.list-view {
+	-fx-border-width: 0;
 	-fx-background-color: #222326;
+}
+
+.list-cell {
+	-fx-background-color: #0d0e0f;
 }
 
 .radiopane {
@@ -37,45 +40,106 @@
 	-fx-text-fill: #879399;
 }
 
-.list-cell:filled:selected:focused, .list-cell:filled:selected {
-	-fx-background-color: #222326;
-	-fx-text-fill: white;
-}
-
-.songlist .list-cell:filled:selected {
-	-fx-background-color: #941F2E;
-}
-
-.songlist .list-cell:filled:selected:hover {
-	-fx-background-color: #A42F3E;
-}
-
-.list-cell {
+.songlist .list-cell {
 	-fx-background-color: #121314;
 	-fx-text-fill: #ffffff;
 	-fx-font: 12pt "Arial";
 }
 
-.list-cell:even {
+.songlist .list-cell:even {
 	-fx-background-color: #0d0e0f;
 }
 
-.list-cell:filled:hover {
+.songlist .list-cell:filled:hover {
 	-fx-background-color: #222326;
+}
+
+.songlist .list-cell:filled:selected:hover {
+	-fx-background-color: #bf3748;
+}
+
+.songlist .list-cell:filled:selected {
+	-fx-background-color: #A42F3E;
 	-fx-text-fill: white;
 }
 
-.list-view, .list-view:focused {
-	-fx-border-width: 0;
-	-fx-background-color: #222326;
+.scroll-bar:horizontal {
+	-fx-background-color: transparent;
+	-fx-opacity: 0.2;
 }
 
-.list-view .scroll-bar:horizontal {
-	    -fx-background-color:transparent;
-	    -fx-opacity: 0.2;
+.scroll-bar:vertical {
+	-fx-background-color: transparent;
+	-fx-opacity: 0.2;
 }
 
-.list-view .scroll-bar:vertical {
-	    -fx-background-color:transparent;
-	    -fx-opacity: 0.2;
+.menulist {
+	-fx-background-color: #121314;
+}
+
+.menulist .list-cell {
+	-fx-text-fill: #999aa1;
+	-fx-font: 14pt "Arial";
+}
+
+.menulist .list-cell:filled:hover {
+	-fx-text-fill: #d4d8e8;
+}
+
+.menulist .list-cell:filled:selected {
+	-fx-text-fill: white;
+}
+
+.button {
+	-fx-border-color: #e2e2e2;
+	-fx-border-width: 1;
+	-fx-background-color: #1d1d1d;
+	-fx-font-size: 11pt;
+	-fx-text-fill: #d8d8d8;
+}
+
+.button:hover {
+	-fx-background-color: #3a3a3a;
+}
+
+.button:pressed, .button:default:hover:pressed {
+	-fx-background-color: white;
+	-fx-text-fill: #1d1d1d;
+}
+
+
+.slider {
+    -fx-skin: "style.FilledSliderSkin";
+}
+
+.slider .thumb {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0em;
+    -fx-padding: 0.333333em; /* 4 */
+
+    -fx-effect: null;
+}
+.slider:focused .thumb {
+    -fx-background-radius: 0em;
+}
+
+.slider .track {
+    -fx-background-color: #6c6c6c;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0.333333em; /* This value must be equal to ".slider .thumb" padding */
+}
+
+.slider .fill {
+    -fx-background-color: #A42F3E;
+    -fx-padding: 0.333333em; /* This value must be equal to ".slider .thumb" padding */
+}
+
+.slider .fill:hover {
+    -fx-background-color: #bf3748;
+}
+
+.slider .fill:pressed {
+    -fx-background-color: #bf3748;
 }

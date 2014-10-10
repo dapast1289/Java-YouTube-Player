@@ -3,6 +3,7 @@ package gui;
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 import base.Charter;
+import base.ItunesCharts;
 
 public class TopLists extends HBox {
 	SongList left;
@@ -34,8 +35,8 @@ public class TopLists extends HBox {
 		Platform.runLater(new Runnable() {
 
 			public void run() {
-				left.setSongs(Charter.getMostStreamed());
-				right.setSongs(Charter.getMostShared());
+				left.setSongs(ItunesCharts.getTopSongs());
+//				right.setSongs(Charter.getMostStreamed());
 			}
 		});
 

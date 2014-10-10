@@ -1,6 +1,10 @@
 package base;
 
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,13 +35,11 @@ public class AudioVid extends SearchVid {
 		super(id, title);
 		this.mediaURL = mediaURL;
 		this.iconURL = iconURL;
-		getBox();
 	}
 
 	public AudioVid(SearchVid sv, String mediaURL) {
 		super(sv.id, sv.title);
 		this.mediaURL = mediaURL;
-		getBox();
 	}
 
 	public HBox getBox() {
@@ -61,13 +63,39 @@ public class AudioVid extends SearchVid {
 			labels = new VBox(5, titleLabel);
 		}
 		if (!(iconURL == null)) {
-			imageView = new ImageView(iconURL);
+			generateImageView();
+			imageView = new ImageView();
 			imageView.setFitHeight(IMAGE_VIEW_SIZE);
 			imageView.setFitWidth(IMAGE_VIEW_SIZE);
 			return box = new HBox(12, imageView, labels);
 		}
 		box = new HBox(12, labels);
 		return box;
+	}
+
+	protected void generateImageView() {
+		Task<Image> task = new Task<Image>() {
+
+			@Override
+			protected Image call() throws Exception {
+				Image img = new Image(iconURL);
+				return img;
+			}
+		};
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				imageView.setImage((Image) event.getSource().getValue());
+			}
+		});
+
+		Thread icongenThread = new Thread(task);
+		icongenThread.setDaemon(true);
+		icongenThread.start();
+		System.out.println("Thread for " + title + " started");
+
 	}
 
 	public void generateMediaURL() {
