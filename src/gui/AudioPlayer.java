@@ -51,7 +51,7 @@ public class AudioPlayer extends HBox {
 	public AudioPlayer() {
 		super();
 		audioPlayer = this;
-		getStyleClass().add("box");
+		getStyleClass().addAll("box", "bar");
 
 		setPrefHeight(50);
 		setAlignment(Pos.CENTER);
@@ -154,6 +154,7 @@ public class AudioPlayer extends HBox {
 		songArray = sl.getSongList();
 		playSong(songArray.get(index));
 		current = index;
+		sl.setCurrent(current);
 	}
 
 	private void playSong(AudioVid av) {

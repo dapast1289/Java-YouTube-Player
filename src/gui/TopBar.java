@@ -1,5 +1,9 @@
 package gui;
 
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -9,14 +13,16 @@ import javafx.scene.layout.HBox;
 public class TopBar extends HBox {
 	
 	Main main = Main.getInstance();
+	final protected double SFSize = 200;
 
 	public TopBar() {
 		super();
 		
-		getStyleClass().add("box");
+		getStyleClass().addAll("box", "bar");
 		
 		TextField searchField = new TextField();
 		searchField.setPromptText("Search");
+		searchField.setPrefWidth(SFSize);
 		addOnEnter(searchField);
 
 		getChildren().add(searchField);
