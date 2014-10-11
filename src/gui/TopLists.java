@@ -1,9 +1,15 @@
 package gui;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.layout.HBox;
-import base.SpotiCharts;
+import base.AudioVid;
 import base.ItunesCharts;
+import base.SpotiCharts;
 
 public class TopLists extends HBox {
 	SongList left;
@@ -21,10 +27,9 @@ public class TopLists extends HBox {
 
 		getChildren().add(left);
 		getChildren().add(right);
-		
-		
+
 		Platform.runLater(new Runnable() {
-			
+
 			public void run() {
 				setSongs();
 			}
@@ -32,14 +37,55 @@ public class TopLists extends HBox {
 	}
 
 	public void setSongs() {
-		Platform.runLater(new Runnable() {
+		Task<ArrayList<AudioVid>> leftTask = new Task<ArrayList<AudioVid>>() {
+			@Override
+			protected ArrayList<AudioVid> call() throws Exception {
+				return ItunesCharts.getTopSongs();
+			}
+		};
 
-			public void run() {
-				left.setSongs(ItunesCharts.getTopSongs());
-				right.setSongs(SpotiCharts.getMostStreamed());
+		Task<ArrayList<AudioVid>> rightTask = new Task<ArrayList<AudioVid>>() {
+			@Override
+			protected ArrayList<AudioVid> call() throws Exception {
+				return SpotiCharts.getMostStreamed();
+			}
+		};
+
+		Thread leftTaskThread = new Thread(leftTask);
+		Thread rightTaskThread = new Thread(rightTask);
+		leftTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Platform.runLater(new Runnable() {
+
+					@SuppressWarnings("unchecked")
+					@Override
+					public void run() {
+						left.setSongs((ArrayList<AudioVid>) event.getSource()
+								.getValue());
+					}
+				});
+				rightTaskThread.start();
 			}
 		});
 
+		rightTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Platform.runLater(new Runnable() {
+
+					@SuppressWarnings("unchecked")
+					@Override
+					public void run() {
+						right.setSongs((ArrayList<AudioVid>) event.getSource()
+								.getValue());
+					}
+				});
+			}
+		});
+		leftTaskThread.start();
 	}
 
 }
