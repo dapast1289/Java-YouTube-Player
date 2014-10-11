@@ -27,7 +27,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		main = this;
 		stage = primaryStage;
-
+		
 		root = new BorderPane();
 		
 		audioPlayer = new AudioPlayer();

@@ -20,7 +20,7 @@ public class AudioVid extends SearchVid {
 
 	public final static int IMAGE_VIEW_SIZE = 60;
 
-	public String getMediaURL() {
+	public synchronized String getMediaURL() {
 		if (!hasMediaURL()) {
 			generateMediaURL();
 		}
@@ -92,13 +92,13 @@ public class AudioVid extends SearchVid {
 		});
 
 		Thread icongenThread = new Thread(task);
-		icongenThread.setDaemon(true);
 		icongenThread.start();
 		System.out.println("Thread for " + title + " started");
 
 	}
 
 	public void generateMediaURL() {
+		System.out.println(Thread.currentThread().getName());
 		if (mediaURL != null) {
 			return;
 		}

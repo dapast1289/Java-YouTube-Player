@@ -6,6 +6,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -36,11 +38,10 @@ public class AudioPlayer extends HBox {
 	private Main main = Main.getInstance();
 	private Button nextButton;
 	private Button playPauseButton;
-//	private Button openInVlcButton;
+	// private Button openInVlcButton;
 	private Slider slider;
 	private boolean isDragging = false;
-	private final ScheduledExecutorService sliderUpdater = Executors
-			.newSingleThreadScheduledExecutor();
+	private final ScheduledExecutorService sliderUpdater = Executors.newSingleThreadScheduledExecutor();
 	private SongDisplay songDisplay = SongDisplay.getInstance();
 	static private AudioPlayer audioPlayer;
 
@@ -88,26 +89,25 @@ public class AudioPlayer extends HBox {
 				}
 			}
 		});
-//		
-//		openInVlcButton = new Button("Open in vlc");
-//		openInVlcButton.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//			@Override
-//			public void handle(ActionEvent arg0) {
-//				String stream = Extractor.extract(currentSong).getDecodedStream(0);
-//				try {
-//					player.pause();
-//					System.out.println("Opening stream: " + stream);
-//					Runtime.getRuntime().exec("vlc " + stream);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
+		//
+		// openInVlcButton = new Button("Open in vlc");
+		// openInVlcButton.setOnAction(new EventHandler<ActionEvent>() {
+		//
+		// @Override
+		// public void handle(ActionEvent arg0) {
+		// String stream = Extractor.extract(currentSong).getDecodedStream(0);
+		// try {
+		// player.pause();
+		// System.out.println("Opening stream: " + stream);
+		// Runtime.getRuntime().exec("vlc " + stream);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// });
 
 		slider = new Slider(0f, 1f, 0f);
-		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L,
-				TimeUnit.MILLISECONDS);
+		sliderUpdater.scheduleAtFixedRate(new Updater(player), 0L, 50L, TimeUnit.MILLISECONDS);
 
 		slider.setOnMousePressed(new EventHandler<MouseEvent>() {
 
@@ -116,7 +116,7 @@ public class AudioPlayer extends HBox {
 				isDragging = true;
 			}
 		});
-		
+
 		slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent event) {
@@ -129,15 +129,13 @@ public class AudioPlayer extends HBox {
 
 		getChildren().add(playPauseButton);
 		getChildren().add(nextButton);
-//		getChildren().add(openInVlcButton);
+		// getChildren().add(openInVlcButton);
 		getChildren().add(slider);
 	}
 
 	private void initVLC() {
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-				"classes/VLC");
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-				"VLC");
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "classes/VLC");
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
 		try {
 			Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		} catch (Exception e) {
@@ -152,6 +150,8 @@ public class AudioPlayer extends HBox {
 		}
 		songList = sl;
 		songArray = sl.getSongList();
+		System.out.println(songArray.get(index));
+		System.out.println();
 		playSong(songArray.get(index));
 		current = index;
 		sl.setCurrent(current);
@@ -159,23 +159,49 @@ public class AudioPlayer extends HBox {
 
 	private void playSong(AudioVid av) {
 		currentSong = av;
-		Platform.runLater(new Runnable() {
+		if (!av.hasMediaURL()) {
+			System.out.println("Starting thread");
+			startMediaThread();
+		} else {
+			System.out.println("Not starting thread");
+			player.playMedia(av.getMediaURL());
+		}
+		
+		songDisplay.setAudioVid(currentSong);
+		main.setTitle(currentSong.getTitle());
 
-			public void run() {
-				try {
+		System.out.println("Now playing: " + av.getTitle());
 
-					songDisplay.setAudioVid(currentSong);
-					main.setTitle(currentSong.getTitle());
-					player.playMedia(currentSong.getMediaURL());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	}
+	
+	protected void startMediaThread() {
+		Task<String> mediaTask = new Task<String>() {
+
+			@Override
+			protected String call() throws Exception {
+				System.out.println("Generating song: " + currentSong.hasMediaURL());
+				String mediaURL = currentSong.getMediaURL();
+				return mediaURL;
+			}
+		};
+
+		mediaTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			
+			@Override
+			public void handle(WorkerStateEvent event) {
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						player.playMedia(currentSong.getMediaURL());
+					}
+				}).start();
 			}
 		});
-
-		System.out.println("Now playing: " + av.getMediaURL());
-//		player.setVolume(100);
-
+		
+		Thread mediaThread = new Thread(mediaTask);
+		mediaThread.start();
+		
 	}
 
 	public void playNext() {
@@ -211,8 +237,7 @@ public class AudioPlayer extends HBox {
 
 			}
 
-			public void subItemFinished(MediaPlayer mediaPlayer,
-					int subItemIndex) {
+			public void subItemFinished(MediaPlayer mediaPlayer, int subItemIndex) {
 				System.out.println("Sub finished");
 
 			}
@@ -230,8 +255,7 @@ public class AudioPlayer extends HBox {
 
 			}
 
-			public void positionChanged(MediaPlayer mediaPlayer,
-					float newPosition) {
+			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 
 			}
 
@@ -255,8 +279,7 @@ public class AudioPlayer extends HBox {
 
 			}
 
-			public void mediaSubItemAdded(MediaPlayer mediaPlayer,
-					libvlc_media_t subItem) {
+			public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
 
 			}
 
@@ -264,8 +287,7 @@ public class AudioPlayer extends HBox {
 
 			}
 
-			public void mediaParsedChanged(MediaPlayer mediaPlayer,
-					int newStatus) {
+			public void mediaParsedChanged(MediaPlayer mediaPlayer, int newStatus) {
 
 			}
 
@@ -277,13 +299,11 @@ public class AudioPlayer extends HBox {
 
 			}
 
-			public void mediaDurationChanged(MediaPlayer mediaPlayer,
-					long newDuration) {
+			public void mediaDurationChanged(MediaPlayer mediaPlayer, long newDuration) {
 
 			}
 
-			public void mediaChanged(MediaPlayer mediaPlayer,
-					libvlc_media_t media, String mrl) {
+			public void mediaChanged(MediaPlayer mediaPlayer, libvlc_media_t media, String mrl) {
 
 			}
 
@@ -298,7 +318,7 @@ public class AudioPlayer extends HBox {
 			public void finished(MediaPlayer mediaPlayer) {
 				System.out.println("Finished");
 				Platform.runLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						playNext();
