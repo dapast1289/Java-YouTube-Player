@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import base.AudioVid;
+import base.Song;
 
 public class SongDisplay extends VBox{
 	
@@ -44,7 +44,7 @@ public class SongDisplay extends VBox{
 		getChildren().add(imageView);
 	}
 	
-	public void setAudioVid(AudioVid av) {
+	public void setSong(Song av) {
 		title = av.getTitle();
 		if (title.contains(" - ")) {
 			artist = title.split(" - ")[0];

@@ -19,8 +19,7 @@ public class SCSearch {
 	public static void main(String[] args) {
 		ArrayList<SCSong> a = search("sound remedy");
 		for (SCSong scSong : a) {
-//			ExtractedSCSong s = SoundcloudExtract.extractSong(scSong);
-			System.out.println(scSong.getTitle());
+			System.out.println(scSong.getMediaURL());
 		}
 	}
 

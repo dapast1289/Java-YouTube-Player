@@ -23,6 +23,7 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import base.AudioVid;
+import base.Song;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -31,10 +32,10 @@ public class AudioPlayer extends HBox {
 
 	private AudioMediaPlayerComponent vlc;
 	private MediaPlayer player;
-	private ArrayList<AudioVid> songArray;
+	private ArrayList<? extends Song> songArray;
 	private SongList songList;
 	private int current;
-	private AudioVid currentSong;
+	private Song currentSong;
 	private Main main = Main.getInstance();
 	private Button nextButton;
 	private Button playPauseButton;
@@ -157,7 +158,7 @@ public class AudioPlayer extends HBox {
 		sl.setCurrent(current);
 	}
 
-	private void playSong(AudioVid av) {
+	private void playSong(Song av) {
 		currentSong = av;
 		if (!av.hasMediaURL()) {
 			System.out.println("Starting thread");
@@ -167,7 +168,7 @@ public class AudioPlayer extends HBox {
 			player.playMedia(av.getMediaURL());
 		}
 		
-		songDisplay.setAudioVid(currentSong);
+		songDisplay.setSong(currentSong);
 		main.setTitle(currentSong.getTitle());
 
 		System.out.println("Now playing: " + av.getTitle());

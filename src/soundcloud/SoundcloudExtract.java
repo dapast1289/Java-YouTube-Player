@@ -14,17 +14,11 @@ public class SoundcloudExtract {
 
 	final static String CLIENT_ID = "b45b1aa10f1ac2941910a7f0d10f8e28";
 	final static String IPHONE_ID = "376f225bf427445fc4bfb6b99b72e0bf";
-	final static Pattern songPattern = Pattern.compile("https?://(www\\.)?soundcloud.com/(?<artist>.*?)/(?<permalink>.*?)$");
-	
-	public static void main(String[] args) {
-		ExtractedSCSong s = extract("https://soundcloud.com/johnnewmanmusic/love-me-again-sound-remedy");
-		System.out.println(s);
-	}
+	final static Pattern songPattern = Pattern
+			.compile("https?://(www\\.)?soundcloud.com/(?<artist>.*?)/(?<permalink>.*?)$");
 
-	public static ExtractedSCSong extract(String soundcloudURL) {
-		SCSong song = retrieveSong(soundcloudURL);
-		System.out.println(song.id);
-		return extractSong(song);
+	public static void main(String[] args) {
+
 	}
 
 	public static SCSong retrieveSong(String scURL) {
@@ -40,21 +34,11 @@ public class SoundcloudExtract {
 		}
 	}
 
-	public static ExtractedSCSong extractSong(SCSong song) {
-		String dlURL;
-		if (song.isDownloadable()) {
-			dlURL = "https://api.soundcloud.com/tracks/" + song.getId() + "/download?client_id=" + CLIENT_ID;
-			System.out.println(dlURL);
-		} else {
-			dlURL = parseStreamJSONdlURL(song);
-		}
-		return new ExtractedSCSong(song, dlURL);
-	}
-
 	protected static String parseStreamJSONdlURL(SCSong song) {
 		try {
-			String streamJsonURL = "http://api.soundcloud.com/i1/tracks/" + song.getId() + "/streams?client_id="
-					+ CLIENT_ID + "&secret_token=None";
+			String streamJsonURL = "http://api.soundcloud.com/i1/tracks/"
+					+ song.getId() + "/streams?client_id=" + CLIENT_ID
+					+ "&secret_token=None";
 
 			String jsonPage = Extractor.httpToString(new URL(streamJsonURL));
 
@@ -74,22 +58,11 @@ public class SoundcloudExtract {
 
 	}
 
-//	protected static String makeInfoURL(String artist, String permalink) {
-//		String url = "http://api.soundcloud.com/tracks/" + permalink + ".json?client_id=" + CLIENT_ID;
-//		return url;
-//	}
-
 	public static String resolveURL(String artist, String title) {
-//		try {
-			String url = "https://soundcloud.com/" + artist + "/" + title;
-			String resolveURL = "http://api.soundcloud.com/resolve.json?url=" + url + "&client_id=" + CLIENT_ID;
-			return resolveURL;
-//			System.out.println(resolveURL);
-//			return Extractor.httpToString(new URL(resolveURL));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
+		String url = "https://soundcloud.com/" + artist + "/" + title;
+		String resolveURL = "http://api.soundcloud.com/resolve.json?url=" + url
+				+ "&client_id=" + CLIENT_ID;
+		return resolveURL;
 	}
 
 	protected static SCSong parseInfoJSON(String infoURL) {
@@ -107,8 +80,10 @@ public class SoundcloudExtract {
 			username = root.get("user").get("username").asText();
 			artworkURL = root.get("artwork_url").asText();
 			duration = root.get("duration").asInt();
-			downloadable = root.get("downloadable").equals("true") ? true : false;
-			return new SCSong(id, title, permalink, username, artworkURL, duration, downloadable);
+			downloadable = root.get("downloadable").equals("true") ? true
+					: false;
+			return new SCSong(id, title, permalink, username, artworkURL,
+					duration, downloadable);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -8,11 +8,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import base.AudioVid;
+import base.Song;
 
-public class SongList extends ListView<AudioVid> {
+public class SongList extends ListView<Song> {
 
-	ArrayList<AudioVid> songList;
+	ArrayList<? extends Song> songList;
 	AudioPlayer audioPlayer = AudioPlayer.getInstance();
 	int current;
 
@@ -27,14 +27,14 @@ public class SongList extends ListView<AudioVid> {
 		
 	}
 	protected void initSongList() {
-		setCellFactory(new Callback<ListView<AudioVid>, ListCell<AudioVid>>() {
+		setCellFactory(new Callback<ListView<Song>, ListCell<Song>>() {
 
-			public ListCell<AudioVid> call(ListView<AudioVid> p) {
+			public ListCell<Song> call(ListView<Song> p) {
 
-				ListCell<AudioVid> cell = new ListCell<AudioVid>() {
+				ListCell<Song> cell = new ListCell<Song>() {
 
 					@Override
-					protected void updateItem(AudioVid t, boolean bln) {
+					protected void updateItem(Song t, boolean bln) {
 						super.updateItem(t, bln);
 						if (t != null) {
 //							setText(t.getApp().getAppName());
@@ -46,15 +46,15 @@ public class SongList extends ListView<AudioVid> {
 			}
 		});
 	}
-	public void setSongs(ArrayList<AudioVid> songs) {
+	public void setSongs(ArrayList<? extends Song> songs) {
 		songList = songs;
 		getItems().clear();
 		
 //		String title;
-		for (AudioVid audioVid : songs) {
-//			title = audioVid.getTitle();
+		for (Song Song : songs) {
+//			title = Song.getTitle();
 //			title = trim(title, 60);
-			getItems().add(audioVid);
+			getItems().add(Song);
 		}
 		current = -1;
 	}
@@ -66,7 +66,7 @@ public class SongList extends ListView<AudioVid> {
 		return s;
 	}
 
-	public ArrayList<AudioVid> getSongList() {
+	public ArrayList<? extends Song> getSongList() {
 		return songList;
 	}
 

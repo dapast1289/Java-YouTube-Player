@@ -1,10 +1,16 @@
 package soundcloud;
 
-public class SCSong {
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import base.Song;
+import base.SongCellBox;
 
-	String id, title, permalink, username, artworkURL;
+public class SCSong implements Song {
+
+	String id, title, permalink, username, iconURL, mediaURL = null;
 	int duration;
 	boolean downloadable;
+	SongCellBox box;
 
 	public SCSong(String id, String title, String permalink, String username, String artworkURL, int duration,
 			boolean downloadable) {
@@ -13,24 +19,61 @@ public class SCSong {
 		this.title = title;
 		this.permalink = permalink;
 		this.username = username;
-		this.artworkURL = artworkURL;
+		this.iconURL = artworkURL;
 		this.duration = duration;
 		this.downloadable = downloadable;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
+	@Override
+	public boolean hasMediaURL() {
+		return mediaURL != null;
 	}
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
+	@Override
+	public String getMediaURL() {
+		if (!hasMediaURL()) {
+			generateMediaURL();
+		}
+		return mediaURL;
+	}
+
+	@Override
+	public void generateMediaURL() {
+		if (mediaURL != null) {
+			return;
+		}
+		if (downloadable) {
+			mediaURL = "https://api.soundcloud.com/tracks/" + id + "/download?client_id=" + SoundcloudExtract.CLIENT_ID;
+		} else {
+			mediaURL = SoundcloudExtract.parseStreamJSONdlURL(this);
+		}
+	}
+
+	@Override
+	public String getIconURL() {
+		return iconURL;
+	}
+
+	@Override
+	public HBox getBox() {
+		if (box != null) {
+			return box;
+		}
+		box = new SongCellBox(title, iconURL);
+		return box;
+	}
+
+	@Override
+	public ImageView getImageView() {
+		return box.getImageView();
+	}
+
+	public boolean isDownloadable() {
+		return downloadable;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	/**
@@ -39,99 +82,6 @@ public class SCSong {
 	public String getTitle() {
 		return title;
 	}
-
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * @return the permalink
-	 */
-	public String getPermalink() {
-		return permalink;
-	}
-
-	/**
-	 * @param permalink
-	 *            the permalink to set
-	 */
-	public void setPermalink(String permalink) {
-		this.permalink = permalink;
-	}
-
-	/**
-	 * @return the username
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * @param username
-	 *            the username to set
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	/**
-	 * @return the artworkURL
-	 */
-	public String getArtworkURL() {
-		return artworkURL;
-	}
-
-	/**
-	 * @param artworkURL
-	 *            the artworkURL to set
-	 */
-	public void setArtworkURL(String artworkURL) {
-		this.artworkURL = artworkURL;
-	}
-
-	/**
-	 * @return the duration
-	 */
-	public int getDuration() {
-		return duration;
-	}
-
-	/**
-	 * @param duration
-	 *            the duration to set
-	 */
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-	/**
-	 * @return the downloadable
-	 */
-	public boolean isDownloadable() {
-		return downloadable;
-	}
-
-	/**
-	 * @param downloadable
-	 *            the downloadable to set
-	 */
-	public void setDownloadable(boolean downloadable) {
-		this.downloadable = downloadable;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "SCSong [id=" + id + ", title=" + title + ", permalink=" + permalink + ", username=" + username
-				+ ", artworkURL=" + artworkURL + ", duration=" + duration + ", downloadable=" + downloadable + "]";
-	}
-
+	
+	
 }
