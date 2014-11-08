@@ -17,6 +17,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.script.Invocable;
@@ -26,18 +27,15 @@ import javax.script.ScriptEngineManager;
 public class Extractor {
 
 	final static String fmt = "A\", \"url_encoded_fmt_stream_map\": \"type=vi\"";
-	final static ScriptEngine se = new ScriptEngineManager().getEngineByName("javascript");
+	final static ScriptEngine se = new ScriptEngineManager()
+			.getEngineByName("javascript");
 
 	static Long time;
 
 	final static boolean debug = false;
 
 	public static void main(String[] args) {
-		ArrayList<AudioVid> vid = YT_API.search("one republic", 1);
-		System.out.println(vid.get(0).getUrl());
-
-		VidPage sv = Extractor.extract(vid.get(0));
-		System.err.println(sv.getDecodedStream(0));
+		// System.out.println(searchVidPage("the imperial march").getAudioStream());
 	}
 
 	public static VidPage searchVidPage(String search) {
@@ -336,7 +334,7 @@ public class Extractor {
 			return null;
 		}
 		String parsedSite = urlToString(url);
-		
+
 		String streamMap = getStreamMap(parsedSite);
 		String playerURL = getPlayerURL(parsedSite);
 		if (!playerURL.contains("https:")) {

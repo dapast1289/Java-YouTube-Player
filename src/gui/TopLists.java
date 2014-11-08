@@ -47,7 +47,7 @@ public class TopLists extends HBox {
 		Task<ArrayList<AudioVid>> rightTask = new Task<ArrayList<AudioVid>>() {
 			@Override
 			protected ArrayList<AudioVid> call() throws Exception {
-				return SpotiCharts.getMostStreamed();
+				return SpotiCharts.getMostShared();
 			}
 		};
 

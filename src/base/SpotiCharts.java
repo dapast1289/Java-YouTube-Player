@@ -25,7 +25,7 @@ public class SpotiCharts {
 	public static ArrayList<AudioVid> getMostShared() {
 		try {
 			URL chartsURL = new URL(
-					"http://charts.spotify.com/api/tracks/most_viral/global/weekly/latest");
+					"http://charts.spotify.com/api/tracks/most_viral/nl/weekly/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -36,7 +36,7 @@ public class SpotiCharts {
 	public static ArrayList<AudioVid> getMostStreamed() {
 		try {
 			URL chartsURL = new URL(
-					"http://charts.spotify.com/api/tracks/most_streamed/global/daily/latest");
+					"http://charts.spotify.com/api/tracks/most_streamed/nl/daily/latest");
 			return parseCharts(chartsURL);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
