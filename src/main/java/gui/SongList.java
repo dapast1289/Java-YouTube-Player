@@ -1,14 +1,14 @@
 package gui;
 
-import java.util.ArrayList;
-
+import base.Song;
 import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import base.Song;
+
+import java.util.ArrayList;
 
 public class SongList extends ListView<Song> {
 
@@ -57,13 +57,6 @@ public class SongList extends ListView<Song> {
 			getItems().add(Song);
 		}
 		current = -1;
-	}
-	
-	public static String trim(String s, int n) {
-		if (s.length() > n) {
-			s = s.substring(0, n) + "…";
-		}
-		return s;
 	}
 
 	public ArrayList<? extends Song> getSongList() {

@@ -18,7 +18,7 @@ public class SoundcloudExtract {
 			.compile("https?://(www\\.)?soundcloud.com/(?<artist>.*?)/(?<permalink>.*?)$");
 
 	public static void main(String[] args) {
-
+		
 	}
 
 	public static SCSong retrieveSong(String scURL) {

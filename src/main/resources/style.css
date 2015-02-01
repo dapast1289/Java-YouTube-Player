@@ -1,24 +1,24 @@
 .box {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 	-fx-padding: 15;
 	-fx-spacing: 10;
 }
 
 .bar {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 }
 
 .list-view {
 	-fx-border-width: 0;
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 }
 
 .list-cell {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 }
 
 .radiopane {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 	-fx-padding: 20;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .songdisplay {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 }
 
 .songdisplay .song {
@@ -45,17 +45,20 @@
 }
 
 .songlist .list-cell {
-	-fx-background-color: #121314;
+/* 	-fx-background-color: #121314; */
+	-fx-background-color: #2B303B;
 	-fx-text-fill: #ffffff;
 	-fx-font: 12pt "Arial";
 }
 
 .songlist .list-cell:even {
-	-fx-background-color: #0d0e0f;
+/* 	-fx-background-color: #0d0e0f; */
+	-fx-background-color: #2B303B;
 }
 
 .songlist .list-cell:filled:hover {
-	-fx-background-color: #222326;
+/* 	-fx-background-color: #222326; */
+	-fx-background-color: #1C1F26;
 }
 
 .songlist .list-cell:filled:selected:hover {
@@ -102,7 +105,7 @@
 	-fx-padding: 8 8;
 	-fx-text-fill: #d8d8d8;
 	-fx-font: 10pt "Arial";
-	-fx-background-color: #1d1d1d;
+	-fx-background-color: #1C1F26;
 	-fx-text-fill: #d8d8d8;
 	-fx-text-fill: #d8d8d8;
 }
@@ -133,7 +136,7 @@
 }
 
 .slider .track {
-	-fx-background-color: #6c6c6c;
+	-fx-background-color: #121419;
 	-fx-background-insets: 0;
 	-fx-background-radius: 0;
 	-fx-padding: 0.333333em;
@@ -154,33 +157,37 @@
 	-fx-background-color: #bf3748;
 }
 
+.scroll-bar {
+	-fx-background-color: #F00;
+}
+
 .scroll-bar>.thumb {
-	-fx-background-color: #3d3d3d;
+	-fx-background-color: #343a46;
 	-fx-background-insets: 0;
 	-fx-background-radius: 0;
 }
 
 .scroll-bar>.thumb:hover {
-	-fx-background-color: #3d3d3d;
+	-fx-background-color: #343a46;
 }
 
 .scroll-bar>.thumb:pressed {
-	-fx-background-color: #6b6b6b;
+	-fx-background-color: #4e5669;
 }
 
 .scroll-bar>.track {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 	-fx-background-insets: 0;
 	-fx-background-radius: 0;
 }
 
 .scroll-bar>.track-background {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 	-fx-background-insets: 0;
 }
 
 .scroll-bar>.increment-button, .scroll-bar>.decrement-button {
-	-fx-background-color: #1a1c1e;
+	-fx-background-color: #1C1F26;
 	-fx-background-insets: 0;
 	-fx-background-radius: 0;
 	-fx-padding: 0.25em; /* 3 */
@@ -253,6 +260,7 @@
     -fx-highlight-fill: #008287; /* TODO: this probably is the "active" color" */
     -fx-highlight-text-fill: white;
 }
+
 
 .text-input:hover{
     -fx-background-color: #e2e2e2;

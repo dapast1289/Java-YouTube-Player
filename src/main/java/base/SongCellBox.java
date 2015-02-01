@@ -1,8 +1,6 @@
 package base;
 
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,12 +26,12 @@ public class SongCellBox extends HBox {
 		artistLabel.setTextFill(Paint.valueOf("#CCC"));
 
 		try {
-			titleLabel = new Label(title.split("-")[1].trim());
+			titleLabel = new Label(trim(title.split("-")[1], 55));
 			titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 			titleLabel.setTextFill(Paint.valueOf("#EEE"));
 			labels = new VBox(5, titleLabel, artistLabel);
 		} catch (Exception e) {
-			titleLabel = new Label(title.split("-")[0].trim());
+			titleLabel = new Label(trim(title.split("-")[0], 55));
 			titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 			titleLabel.setTextFill(Paint.valueOf("#EEE"));
 			labels = new VBox(5, titleLabel);
@@ -49,7 +47,17 @@ public class SongCellBox extends HBox {
 		setSpacing(12);
 	}
 
-	public void generateImageView() {
+
+    public static String trim(String s, int n) {
+        s = s.trim();
+        if (s.length() > n) {
+            s = s.substring(0, n) + "…";
+        }
+        return s;
+    }
+
+
+    public void generateImageView() {
 		Task<Image> task = new Task<Image>() {
 
 			@Override
@@ -59,13 +67,7 @@ public class SongCellBox extends HBox {
 			}
 		};
 
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				imageView.setImage((Image) event.getSource().getValue());
-			}
-		});
+		task.setOnSucceeded(event -> imageView.setImage((Image) event.getSource().getValue()));
 
 		Thread icongenThread = new Thread(task);
 		icongenThread.start();

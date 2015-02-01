@@ -1,16 +1,12 @@
-package tests;
-
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
+package base;
 
 import javafx.embed.swing.JFXPanel;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import base.AudioVid;
-import base.YT_API;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 public class YT_APITest {
 

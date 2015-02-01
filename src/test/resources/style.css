@@ -1,0 +1,310 @@
+.box {
+	-fx-background-color: #1C1F26;
+	-fx-padding: 15;
+	-fx-spacing: 10;
+}
+
+.bar {
+	-fx-background-color: #1C1F26;
+}
+
+.list-view {
+	-fx-border-width: 0;
+	-fx-background-color: #1C1F26;
+}
+
+.list-cell {
+	-fx-background-color: #1C1F26;
+}
+
+.radiopane {
+	-fx-background-color: #1C1F26;
+	-fx-padding: 20;
+}
+
+.content-text {
+	-fx-text-fill: #FFF;
+	-fx-spacing: 10;
+	-fx-padding: 15;
+}
+
+.textfield {
+	-fx-spacing: 10;
+}
+
+.songdisplay {
+	-fx-background-color: #1C1F26;
+}
+
+.songdisplay .song {
+	-fx-text-fill: #e0e4e6;
+}
+
+.songdisplay .artist {
+	-fx-text-fill: #879399;
+}
+
+.songlist .list-cell {
+/* 	-fx-background-color: #121314; */
+	-fx-background-color: #2B303B;
+	-fx-text-fill: #ffffff;
+	-fx-font: 12pt "Arial";
+}
+
+.songlist .list-cell:even {
+/* 	-fx-background-color: #0d0e0f; */
+	-fx-background-color: #2B303B;
+}
+
+.songlist .list-cell:filled:hover {
+/* 	-fx-background-color: #222326; */
+	-fx-background-color: #1C1F26;
+}
+
+.songlist .list-cell:filled:selected:hover {
+	-fx-background-color: #bf3748;
+}
+
+.songlist .list-cell:filled:selected {
+	-fx-background-color: #A42F3E;
+	-fx-text-fill: white;
+}
+
+/* .scroll-bar:horizontal { */
+/* 	-fx-background-color: transparent; */
+/* 	-fx-opacity: 0.2; */
+/* } */
+
+/* .scroll-bar:vertical { */
+/* 	-fx-background-color: transparent; */
+/* 	-fx-opacity: 0.2; */
+/* } */
+.menulist {
+	-fx-background-color: #121314;
+}
+
+.menulist .list-cell {
+	-fx-text-fill: #999aa1;
+	-fx-font: 14pt "Arial";
+}
+
+.menulist .list-cell:filled:hover {
+	-fx-text-fill: #d4d8e8;
+}
+
+.menulist .list-cell:filled:selected {
+	-fx-text-fill: white;
+}
+
+.button {
+	-fx-background-radius: 0;
+	/* 	-fx-background-color: #1d1d1d; */
+	/* 	-fx-font-size: 11pt; */
+	-fx-border-width: 2px;
+	-fx-border-color: #EEE;
+	-fx-padding: 8 8;
+	-fx-text-fill: #d8d8d8;
+	-fx-font: 10pt "Arial";
+	-fx-background-color: #1C1F26;
+	-fx-text-fill: #d8d8d8;
+	-fx-text-fill: #d8d8d8;
+}
+
+.button:hover {
+	-fx-background-color: #3a3a3a;
+}
+
+.button:pressed, .button:default:hover:pressed {
+	-fx-background-color: white;
+	-fx-text-fill: #1d1d1d;
+}
+
+.slider {
+	-fx-skin: "style.FilledSliderSkin";
+}
+
+.slider .thumb {
+	-fx-background-color: white;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0em;
+	-fx-padding: 0.333333em; /* 4 */
+	-fx-effect: null;
+}
+
+.slider:focused .thumb {
+	-fx-background-radius: 0em;
+}
+
+.slider .track {
+	-fx-background-color: #121419;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0;
+	-fx-padding: 0.333333em;
+	/* This value must be equal to ".slider .thumb" padding */
+}
+
+.slider .fill {
+	-fx-background-color: #A42F3E;
+	-fx-padding: 0.333333em;
+	/* This value must be equal to ".slider .thumb" padding */
+}
+
+.slider .fill:hover {
+	-fx-background-color: #bf3748;
+}
+
+.slider .fill:pressed {
+	-fx-background-color: #bf3748;
+}
+
+.scroll-bar {
+	-fx-background-color: #F00;
+}
+
+.scroll-bar>.thumb {
+	-fx-background-color: #343a46;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0;
+}
+
+.scroll-bar>.thumb:hover {
+	-fx-background-color: #343a46;
+}
+
+.scroll-bar>.thumb:pressed {
+	-fx-background-color: #4e5669;
+}
+
+.scroll-bar>.track {
+	-fx-background-color: #1C1F26;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0;
+}
+
+.scroll-bar>.track-background {
+	-fx-background-color: #1C1F26;
+	-fx-background-insets: 0;
+}
+
+.scroll-bar>.increment-button, .scroll-bar>.decrement-button {
+	-fx-background-color: #1C1F26;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0;
+	-fx-padding: 0.25em; /* 3 */
+}
+
+.scroll-bar>.increment-button:hover, .scroll-bar>.decrement-button:hover
+	{
+	-fx-background-color: #3d3d3d;
+}
+
+.scroll-bar>.increment-button:pressed, .scroll-bar>.decrement-button:pressed
+	{
+	-fx-background-color: #3d3d3d;
+}
+
+.scroll-bar>.decrement-button>.decrement-arrow, .scroll-bar>.increment-button>.increment-arrow
+	{
+	-fx-background-color: transparent, #3d3d3d;
+	-fx-background-insets: 1 0 -1 0, 0;
+	-fx-effect: null;
+}
+
+.scroll-bar>.increment-button:pressed>.increment-arrow, .scroll-bar>.decrement-button:pressed>.decrement-arrow
+	{
+	-fx-background-color: transparent, white;
+	-fx-effect: null;
+}
+
+.scroll-bar:vertical>.increment-button>.increment-arrow, .scroll-bar:vertical>.decrement-button>.decrement-arrow
+	{
+	-fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
+}
+
+.scroll-bar:horizontal>.increment-button>.increment-arrow, .scroll-bar:horizontal>.decrement-button>.decrement-arrow
+	{
+	-fx-padding: 0.5em 0.333333em 0.0em 0.0em; /* 6 4 0 0 */
+}
+
+.scroll-bar:disabled {
+	-fx-opacity: 0.4;
+}
+
+/* ARROW SHAPES */
+.scroll-bar:horizontal>.increment-button>.increment-arrow {
+	-fx-shape:
+		"M7.626,12.876L4.251,8.751H7.14L11,12.876L7.14,17H4.251L7.626,12.876z";
+}
+
+.scroll-bar:horizontal>.decrement-button>.decrement-arrow {
+	-fx-shape: "M11,17H8.111l-3.86-4.124l3.86-4.125H11l-3.375,4.125L11,17z";
+}
+
+.scroll-bar:vertical>.increment-button>.increment-arrow {
+	-fx-shape:
+		"M8.124,13.625l4.125-3.375v2.889l-4.125,3.86L4,13.139V10.25L8.124,13.625z";
+}
+
+.scroll-bar:vertical>.decrement-button>.decrement-arrow {
+	-fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+}
+
+.text-input{
+    -fx-background-radius: 0, 0;
+
+    -fx-background-color: #d2d2d2;
+    -fx-background-insets: 0;
+
+    -fx-prompt-text-fill: #818181;
+
+    -fx-highlight-fill: #008287; /* TODO: this probably is the "active" color" */
+    -fx-highlight-text-fill: white;
+}
+
+
+.text-input:hover{
+    -fx-background-color: #e2e2e2;
+}
+
+.text-input:focused{
+    -fx-background-color: #5c5c5c, white;
+
+    -fx-text-fill: black;
+}
+
+/*.text-input > Pane{*/
+/*-fx-padding: 0.333333em 0.583em 0.333333em 0em; *//* 4 7 4 0 */
+/*}*/
+
+.text-input > .right-button{
+    -fx-cursor: default;
+
+    -fx-background-insets: -0.1666665em -0.45em -0.1666665em -0.45em; /* 4 7 4 7 -> this values are subtracted by 2px in em because of the border of the textfield */
+}
+
+.text-field > .right-button > .right-button-graphic {
+    -fx-shape            : "M221.738,305.873l6.135,6.16l-2.875,2.863l-6.135-6.159l-6.263,6.237l-2.864-2.875l6.263-6.238l-6.177-6.202l2.875-2.863l6.177,6.201l6.244-6.22l2.864,2.876L221.738,305.873z";
+
+    -fx-padding: 0.5em 0.5em; /* TODO: put the real number here 18 18 */
+    -fx-background-color: black;
+}
+
+.text-input > .right-button:hover {
+    -fx-background-color: #dedede;
+}
+
+.text-input > .right-button:pressed {
+    -fx-background-color: black;
+}
+
+.text-input > .right-button:pressed > .right-button-graphic {
+    -fx-background-color: white;
+}
+
+.text-input:disabled
+{
+    -fx-opacity: 1;
+    -fx-background-insets: 0, 2;
+    -fx-background-color: #777777, #1d1d1d;
+    -fx-text-fill: #616161;
+}

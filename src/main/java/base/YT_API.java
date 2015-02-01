@@ -19,7 +19,6 @@ public class YT_API {
 			System.out.println(audioVid.id);
 			System.out.println(audioVid.getIconURL());
 		}
-
 	}
 
 	final static String YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id(videoId),snippet(title,thumbnails(medium)))&key=AIzaSyAaijMU4vmkUSE5tYd3pfCnBLwjsExqzPc&maxResults=:NUMBER_OF_ITEMS:&type=video&videoCategoryId=10&q=";
@@ -38,8 +37,17 @@ public class YT_API {
 			return null;
 		}
 	}
+	
+	public static String getURL(String search) {
+		ArrayList<AudioVid> list = search(search, 1);
+		if (list.size() == 0)
+			return null;
+		
+		VidPage page = Extractor.extract(list.get(0));
+		return page.getDecodedStream(0);
+	}
 
-	public static ArrayList<AudioVid> parseAPIJson(URL url) {
+	private static ArrayList<AudioVid> parseAPIJson(URL url) {
 		ArrayList<AudioVid> searchArray = new ArrayList<AudioVid>();
 		String title, id, iconURL;
 
@@ -67,7 +75,7 @@ public class YT_API {
 		return searchArray;
 	}
 
-	public static URL getRelatedURL(String videoID, int numberOfItems)
+	private static URL getRelatedURL(String videoID, int numberOfItems)
 			throws MalformedURLException {
 		if (videoID.length() != 11) {
 			System.err.println("Wrong URL length");
@@ -85,7 +93,7 @@ public class YT_API {
 		return null;
 	}
 
-	public static URL getSearchUrl(String search, int numberOfItems) {
+	private static URL getSearchUrl(String search, int numberOfItems) {
 		try {
 			return new URL(YOUTUBE_SEARCH_URL.replace(":NUMBER_OF_ITEMS:",
 					String.valueOf(numberOfItems))

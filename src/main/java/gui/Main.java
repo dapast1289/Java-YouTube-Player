@@ -2,12 +2,10 @@ package gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -39,20 +37,17 @@ public class Main extends Application {
 		root.setTop(topBar);
 
 		scene = new Scene(root, 1200, 800);
-		scene.getStylesheets().add("style.css");
+		scene.getStylesheets().add("/style.css");
 
 		stage.setTitle("Utubr");
 		stage.setScene(scene);
 		stage.show();
-		
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
-			public void handle(WindowEvent event) {
-				audioPlayer.stop();
-				Platform.exit();
-				System.exit(0);
-			}
-		});
+
+		stage.setOnCloseRequest(event -> {
+            audioPlayer.stop();
+            Platform.exit();
+            System.exit(0);
+        });
 	}
 	
 	public void clearMenuSelection() {

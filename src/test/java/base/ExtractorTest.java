@@ -1,29 +1,22 @@
 /**
- * 
- */
-package tests;
+*
+*/
+package base;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import javafx.embed.swing.JFXPanel;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javafx.embed.swing.JFXPanel;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import base.AudioVid;
-import base.Extractor;
-import base.MediaStream;
-import base.VidPage;
-import base.YT_API;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
- * @author jaap
- *
- */
+* @author jaap
+*
+*/
 public class ExtractorTest {
 	AudioVid av;
 

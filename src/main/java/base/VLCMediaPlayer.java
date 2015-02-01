@@ -26,9 +26,9 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 	// String vlcPath;
 
 	public VLCMediaPlayer() {
-//		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
-//				"C:/Program Files/VideoLAN/VLC");
-//		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		// NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),
+		// "C:/Program Files/VideoLAN/VLC");
+		// Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		getMediaPlayer().setVolume(100);
 
 		getMediaPlayer().addMediaPlayerEventListener(
@@ -144,6 +144,30 @@ public class VLCMediaPlayer extends EmbeddedMediaPlayerComponent {
 					}
 
 					public void backward(MediaPlayer arg0) {
+
+					}
+
+					@Override
+					public void scrambledChanged(MediaPlayer mediaPlayer,
+							int newScrambled) {
+
+					}
+
+					@Override
+					public void elementaryStreamAdded(MediaPlayer mediaPlayer,
+							int type, int id) {
+
+					}
+
+					@Override
+					public void elementaryStreamDeleted(
+							MediaPlayer mediaPlayer, int type, int id) {
+
+					}
+
+					@Override
+					public void elementaryStreamSelected(
+							MediaPlayer mediaPlayer, int type, int id) {
 
 					}
 				});
