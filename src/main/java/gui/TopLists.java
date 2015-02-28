@@ -1,15 +1,13 @@
 package gui;
 
-import java.util.ArrayList;
-
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import javafx.scene.layout.HBox;
 import base.AudioVid;
 import base.ItunesCharts;
 import base.SpotiCharts;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.layout.HBox;
+
+import java.util.ArrayList;
 
 public class TopLists extends HBox {
 	SongList left;
@@ -53,38 +51,14 @@ public class TopLists extends HBox {
 
 		Thread leftTaskThread = new Thread(leftTask);
 		Thread rightTaskThread = new Thread(rightTask);
-		leftTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		leftTask.setOnSucceeded(event -> {
+            Platform.runLater(() -> left.setSongs((ArrayList<AudioVid>) event.getSource()
+                    .getValue()));
+            rightTaskThread.start();
+        });
 
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Platform.runLater(new Runnable() {
-
-					@SuppressWarnings("unchecked")
-					@Override
-					public void run() {
-						left.setSongs((ArrayList<AudioVid>) event.getSource()
-								.getValue());
-					}
-				});
-				rightTaskThread.start();
-			}
-		});
-
-		rightTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Platform.runLater(new Runnable() {
-
-					@SuppressWarnings("unchecked")
-					@Override
-					public void run() {
-						right.setSongs((ArrayList<AudioVid>) event.getSource()
-								.getValue());
-					}
-				});
-			}
-		});
+		rightTask.setOnSucceeded(event -> Platform.runLater(() -> right.setSongs((ArrayList<AudioVid>) event.getSource()
+                .getValue())));
 		leftTaskThread.start();
 	}
 

@@ -19,14 +19,14 @@ public class TopBar extends HBox {
 		getStyleClass().addAll("box", "bar");
 		
 		TextField youtubeSearchField = new TextField();
-		youtubeSearchField.setPromptText("Search");
+		youtubeSearchField.setPromptText("Search YouTube");
 		youtubeSearchField.setPrefWidth(SFSize);
 		addYTOnEnter(youtubeSearchField);
 
 		getChildren().add(youtubeSearchField);
 		
 		TextField soundcloudSearchField = new TextField();
-		soundcloudSearchField.setPromptText("Search");
+		soundcloudSearchField.setPromptText("Search SoundCloud");
 		soundcloudSearchField.setPrefWidth(SFSize);
 		addSCOnEnter(soundcloudSearchField);
 
