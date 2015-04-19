@@ -2,6 +2,7 @@ package base;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import org.json.JSONObject;
 
 public interface Song {
 
@@ -18,5 +19,7 @@ public interface Song {
 	public ImageView getImageView();
 	
 	public String getTitle();
+
+    public JSONObject toJSONObject();
 
 }

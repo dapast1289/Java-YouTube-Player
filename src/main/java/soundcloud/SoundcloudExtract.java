@@ -1,14 +1,12 @@
 package soundcloud;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import base.Extractor;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SoundcloudExtract {
 
@@ -40,16 +38,15 @@ public class SoundcloudExtract {
 					+ song.getId() + "/streams?client_id=" + CLIENT_ID
 					+ "&secret_token=None";
 
-			String jsonPage = Extractor.httpToString(new URL(streamJsonURL));
+			String jsonPage = IOUtils.toString(new URL(streamJsonURL));
 
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(jsonPage);
+			JSONObject root = new JSONObject(jsonPage);
 			if (root.has("http_mp3_128_url")) {
-				return root.get("http_mp3_128_url").asText();
+				return root.getString("http_mp3_128_url");
 			} else if (root.has("hls_mp3_128_url")) {
-				return root.get("hls_mp3_128_url").asText();
+				return root.getString("hls_mp3_128_url");
 			} else if (root.has("preview_mp3_128_url")) {
-				return root.get("preview_mp3_128_url").asText();
+				return root.getString("preview_mp3_128_url");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,22 +63,24 @@ public class SoundcloudExtract {
 	}
 
 	protected static SCSong parseInfoJSON(String infoURL) {
-		String id, permalink, title, username, artworkURL;
-		int duration;
+		int id;
+        String permalink;
+        String title;
+        String username;
+        String artworkURL;
+        int duration;
 		boolean downloadable;
 		try {
-			String jsonPage = Extractor.httpToString(new URL(infoURL));
+			String jsonPage = IOUtils.toString(new URL(infoURL));
 			System.out.println(jsonPage);
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(jsonPage);
-			id = root.get("id").asText();
-			title = root.get("title").asText();
-			permalink = root.get("permalink").asText();
-			username = root.get("user").get("username").asText();
-			artworkURL = root.get("artwork_url").asText();
-			duration = root.get("duration").asInt();
-			downloadable = root.get("downloadable").equals("true") ? true
-					: false;
+            JSONObject root = new JSONObject(jsonPage);
+			id = root.getInt("id");
+			title = root.getString("title");
+			permalink = root.getString("permalink");
+			username = root.getJSONObject("user").getString("username");
+			artworkURL = root.getString("artwork_url");
+			duration = root.getInt("duration");
+			downloadable = root.getBoolean("downloadable");
 			return new SCSong(id, title, permalink, username, artworkURL,
 					duration, downloadable);
 		} catch (IOException e) {

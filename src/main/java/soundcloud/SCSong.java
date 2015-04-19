@@ -1,87 +1,106 @@
 package soundcloud;
 
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import base.Song;
 import base.SongCellBox;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import org.json.JSONObject;
 
 public class SCSong implements Song {
 
-	String id, title, permalink, username, iconURL, mediaURL = null;
-	int duration;
-	boolean downloadable;
-	SongCellBox box;
+    String title, permalink, username, iconURL, mediaURL = null;
+    int duration, id;
+    boolean downloadable;
+    SongCellBox box;
 
-	public SCSong(String id, String title, String permalink, String username, String artworkURL, int duration,
-			boolean downloadable) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.permalink = permalink;
-		this.username = username;
-		this.iconURL = artworkURL;
-		this.duration = duration;
-		this.downloadable = downloadable;
-	}
+    public SCSong(JSONObject obj) {
+        this(obj.getInt("id"), obj.getString("title"), obj.getString("permalink"), obj.getString("username"),
+                obj.getString("artworkURL"), obj.getInt("duration"), obj.getBoolean("downloadable"));
+    }
 
-	@Override
-	public boolean hasMediaURL() {
-		return mediaURL != null;
-	}
+    public SCSong(int id, String title, String permalink, String username, String artworkURL, int duration,
+                  boolean downloadable) {
+        super();
+        this.id = id;
+        this.title = title;
+        this.permalink = permalink;
+        this.username = username;
+        this.iconURL = artworkURL;
+        this.duration = duration;
+        this.downloadable = downloadable;
+    }
 
-	@Override
-	public String getMediaURL() {
-		if (!hasMediaURL()) {
-			generateMediaURL();
-		}
-		return mediaURL;
-	}
+    @Override
+    public boolean hasMediaURL() {
+        return mediaURL != null;
+    }
 
-	@Override
-	public void generateMediaURL() {
-		if (mediaURL != null) {
-			return;
-		}
-		if (downloadable) {
-			mediaURL = "https://api.soundcloud.com/tracks/" + id + "/download?client_id=" + SoundcloudExtract.CLIENT_ID;
-		} else {
-			mediaURL = SoundcloudExtract.parseStreamJSONdlURL(this);
-		}
-	}
+    @Override
+    public String getMediaURL() {
+        if (!hasMediaURL()) {
+            generateMediaURL();
+        }
+        return mediaURL;
+    }
 
-	@Override
-	public String getIconURL() {
-		return iconURL;
-	}
+    @Override
+    public void generateMediaURL() {
+        if (mediaURL != null) {
+            return;
+        }
+        if (downloadable) {
+            mediaURL = "https://api.soundcloud.com/tracks/" + id + "/download?client_id=" + SoundcloudExtract.CLIENT_ID;
+        } else {
+            mediaURL = SoundcloudExtract.parseStreamJSONdlURL(this);
+        }
+    }
 
-	@Override
-	public HBox getBox() {
-		if (box != null) {
-			return box;
-		}
-		box = new SongCellBox(title, iconURL);
-		return box;
-	}
+    @Override
+    public String getIconURL() {
+        return iconURL;
+    }
 
-	@Override
-	public ImageView getImageView() {
-		return box.getImageView();
-	}
+    @Override
+    public HBox getBox() {
+        if (box != null) {
+            return box;
+        }
+        box = new SongCellBox(title, iconURL);
+        return box;
+    }
 
-	public boolean isDownloadable() {
-		return downloadable;
-	}
+    @Override
+    public ImageView getImageView() {
+        return box.getImageView();
+    }
 
-	public String getId() {
-		return id;
-	}
+    public boolean isDownloadable() {
+        return downloadable;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-	
-	
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        obj.putOpt("id", id);
+        obj.putOpt("title", title);
+        obj.putOpt("permalink", permalink);
+        obj.putOpt("username", username);
+        obj.putOpt("iconURL", iconURL);
+        obj.putOpt("duration", duration);
+        obj.putOpt("downloadable", downloadable);
+        return obj;
+    }
+
+
 }

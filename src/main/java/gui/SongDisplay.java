@@ -37,11 +37,12 @@ public class SongDisplay extends VBox{
 		artistLabel.setFont(Font.font("arial", FontWeight.NORMAL, 14));
 		artistLabel.setWrapText(true);
 		
-		setAlignment(Pos.BASELINE_CENTER);
-		
 		getChildren().add(songLabel);
 		getChildren().add(artistLabel);
 		getChildren().add(imageView);
+
+		setPrefWidth(240);
+		setPrefHeight(240);
 	}
 	
 	public void setSong(Song av) {

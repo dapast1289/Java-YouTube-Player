@@ -1,15 +1,14 @@
 package base;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SpotiCharts {
 
@@ -46,26 +45,23 @@ public class SpotiCharts {
 
 	public static ArrayList<AudioVid> parseCharts(URL chartsURL) {
 		ArrayList<AudioVid> array = new ArrayList<AudioVid>();
-		String data = Extractor.httpToString(chartsURL);
-		ObjectMapper mapper = new ObjectMapper();
 
 		try {
-			JsonNode tracks = mapper.readTree(data).get("tracks");
-			JsonNode track;
+            String data = IOUtils.toString(chartsURL);
+			JSONArray tracks = new JSONObject(data).getJSONArray("tracks");
+			JSONObject track;
 			String trackName, artistName, iconURL, name;
 
-			for (int i = 0; i < tracks.size(); i++) {
-				track = tracks.get(i);
-				trackName = track.get("track_name").asText();
-				artistName = track.get("artist_name").asText();
-				iconURL = track.get("artwork_url").asText();
+			for (int i = 0; i < tracks.length(); i++) {
+				track = tracks.getJSONObject(i);
+				trackName = track.getString("track_name");
+				artistName = track.getString("artist_name");
+				iconURL = track.getString("artwork_url");
 				name = StringEscapeUtils.unescapeJson(artistName) + " - "
 						+ StringEscapeUtils.unescapeJson(trackName);
 				array.add(new AudioVid(null, name, null, iconURL));
 			}
 
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

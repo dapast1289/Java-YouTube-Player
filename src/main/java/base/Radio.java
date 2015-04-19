@@ -1,9 +1,5 @@
 package base;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -19,10 +15,14 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 public class Radio extends Application {
 
 	TextField searchField;
-	SearchVid current;
+	AudioVid current;
 	MediaView mediaView;
 	MediaPlayer mediaPlayer;
 	Media media;
@@ -41,7 +41,7 @@ public class Radio extends Application {
 						&& !searchField.getText().isEmpty()) {
 					current = YT_API.search(searchField.getText(), 1).get(0);
 					System.out.println(current);
-					String stream = Extractor.extract(current).getSmall();
+					String stream = current.getMediaURL();
 					System.out.println(stream);
 
 					media = new Media(stream);

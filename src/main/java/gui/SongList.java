@@ -1,20 +1,27 @@
 package gui;
 
+import base.PlaylistDatabase;
 import base.Song;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class SongList extends ListView<Song> {
 
-    ArrayList<? extends Song> songList;
+    List<? extends Song> songList;
     AudioPlayer audioPlayer = AudioPlayer.getInstance();
     int current;
+    ContextMenu contextMenu;
 
     public SongList() {
         super();
@@ -24,6 +31,32 @@ public class SongList extends ListView<Song> {
 
         initSongList();
         addMouseListener();
+
+        contextMenu = new ContextMenu();
+        setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+            @Override
+            public void handle(ContextMenuEvent event) {
+                updateContextMenu();
+            }
+        });
+        contextMenu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                MenuItem target = (MenuItem) event.getTarget();
+                System.out.println(target.getText());
+                PlaylistDatabase.getInstance().addToPlaylist(target.getText(), songList.get(getSelectionModel().getSelectedIndex()));
+            }
+        });
+
+        updateContextMenu();
+        setContextMenu(contextMenu);
+    }
+
+    private void updateContextMenu() {
+        contextMenu.getItems().clear();
+        PlaylistDatabase pldb = PlaylistDatabase.getInstance();
+        Set<String> playlists = pldb.getPlaylists();
+        playlists.forEach(v -> contextMenu.getItems().add(new MenuItem(v)));
     }
 
     protected void initSongList() {
@@ -31,7 +64,7 @@ public class SongList extends ListView<Song> {
 
             public ListCell<Song> call(ListView<Song> p) {
 
-                ListCell<Song> cell = new ListCell<Song>() {
+                ListCell cell = new ListCell<Song>() {
 
                     @Override
                     protected void updateItem(Song t, boolean bln) {
@@ -47,9 +80,10 @@ public class SongList extends ListView<Song> {
         });
     }
 
-    public void setSongs(ArrayList<? extends Song> songs) {
+    public void setSongs(List<? extends Song> songs) {
         songList = songs;
         getItems().clear();
+//        getChildren().get(0);
 
 //		String title;
         for (Song Song : songs) {
@@ -60,7 +94,7 @@ public class SongList extends ListView<Song> {
         current = -1;
     }
 
-    public ArrayList<? extends Song> getSongList() {
+    public List<? extends Song> getSongList() {
         return songList;
     }
 

@@ -1,5 +1,6 @@
 package gui;
 
+import base.PlaylistDatabase;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -42,6 +43,8 @@ public class Main extends Application {
 		stage.setTitle("Utubr");
 		stage.setScene(scene);
 		stage.show();
+
+        PlaylistDatabase.getInstance();
 
 		stage.setOnCloseRequest(event -> {
             audioPlayer.stop();

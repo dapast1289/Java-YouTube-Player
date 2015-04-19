@@ -17,7 +17,7 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ public class AudioPlayer extends HBox {
 
     private AudioMediaPlayerComponent vlc;
     private MediaPlayer player;
-    private ArrayList<? extends Song> songArray;
+    private List<? extends Song> songArray;
     private SongList songList;
     private int current;
     private Song currentSong;
@@ -82,11 +82,10 @@ public class AudioPlayer extends HBox {
         //
         // @Override
         // public void handle(ActionEvent arg0) {
-        // String stream = Extractor.extract(currentSong).getDecodedStream(0);
+        // String stream = Extractor.extractAudio(currentSong).getDecodedStream(0);
         // try {
         // player.pause();
-        // System.out.println("Opening stream: " + stream);
-        // Runtime.getRuntime().exec("vlc " + stream);
+        //         // Runtime.getRuntime().exec("vlc " + stream);
         // } catch (IOException e) {
         // e.printStackTrace();
         // }
@@ -103,10 +102,7 @@ public class AudioPlayer extends HBox {
             player.setTime(newValue);
             isDragging = false;
 
-            System.out.println(player.getMediaDetails().getAudioDescriptions());
-            System.out.println(player.getMediaDetails().getSpuDescriptions());
-            System.out.println(player.getMediaDetails());
-
+                                    
         });
         setHgrow(slider, Priority.ALWAYS);
 
@@ -149,8 +145,7 @@ public class AudioPlayer extends HBox {
         songDisplay.setSong(currentSong);
         main.setTitle(currentSong.getTitle());
 
-        System.out.println("Now playing: " + av.getTitle());
-
+        
     }
 
     protected void startMediaThread() {
@@ -189,141 +184,111 @@ public class AudioPlayer extends HBox {
         mp.addMediaPlayerEventListener(new MediaPlayerEventListener() {
 
             public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
-                System.out.println("AudioPlayer.videoOutput");
-            }
+                            }
 
             public void titleChanged(MediaPlayer mediaPlayer, int newTitle) {
-                System.out.println("AudioPlayer.titleChanged");
-            }
+                            }
 
             public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
             }
 
             public void subItemPlayed(MediaPlayer mediaPlayer, int subItemIndex) {
-                System.out.println("AudioPlayer.subItemPlayed");
-            }
+                            }
 
             public void subItemFinished(MediaPlayer mediaPlayer, int subItemIndex) {
-                System.out.println("AudioPlayer.subItemFinished");
-            }
+                            }
 
             public void stopped(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.stopped");
-
+                
             }
 
             public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
-                System.out.println("AudioPlayer.snapshotTaken");
-            }
+                            }
 
             public void seekableChanged(MediaPlayer mediaPlayer, int newSeekable) {
-                System.out.println("AudioPlayer.seekableChanged to " + newSeekable);
-            }
+                            }
 
             public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
             }
 
             public void playing(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.playing");
-            }
+                            }
 
             public void paused(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.paused");
-            }
+                            }
 
             public void pausableChanged(MediaPlayer mediaPlayer, int newPausable) {
-                System.out.println("AudioPlayer.pausableChanged to " + newPausable);
-            }
+                            }
 
             public void opening(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.opening");
-            }
+                            }
 
             public void newMedia(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.newMedia");
-            }
+                            }
 
             public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
-                System.out.println("AudioPlayer.mediaSubItemAdded");
-            }
+                            }
 
             public void mediaStateChanged(MediaPlayer mediaPlayer, int newState) {
-                System.out.println("AudioPlayer.mediaStateChanged to " + newState);
-                System.out.println(mediaPlayer.getMediaState());
-            }
+                                            }
 
             public void mediaParsedChanged(MediaPlayer mediaPlayer, int newStatus) {
-                System.out.println("AudioPlayer.mediaParsedChanged");
-            }
+                            }
 
             public void mediaMetaChanged(MediaPlayer mediaPlayer, int metaType) {
-                System.out.println("AudioPlayer.mediaMetaChanged");
-            }
+                            }
 
             public void mediaFreed(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.mediaFreed");
-            }
+                            }
 
             public void mediaDurationChanged(MediaPlayer mediaPlayer, long newDuration) {
-                System.out.println("AudioPlayer.mediaDurationChanged");
-            }
+                            }
 
             public void mediaChanged(MediaPlayer mediaPlayer, libvlc_media_t media, String mrl) {
-                System.out.println("AudioPlayer.mediaChanged");
-            }
+                            }
 
             public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
-                System.out.println("AudioPlayer.lengthChanged");
-            }
+                            }
 
             public void forward(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.forward");
-            }
+                            }
 
             public void finished(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.finished");
-                Platform.runLater(() -> playNext());
+                                Platform.runLater(() -> playNext());
             }
 
             public void error(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.error");
-            }
+                            }
 
             public void endOfSubItems(MediaPlayer mediaPlayer) {
                 playNext();
-                System.out.println("AudioPlayer.endOfSubItems");
-            }
+                            }
 
             public void buffering(MediaPlayer mediaPlayer, float newCache) {
             }
 
             public void backward(MediaPlayer mediaPlayer) {
-                System.out.println("AudioPlayer.backward");
-            }
+                            }
 
             @Override
             public void scrambledChanged(MediaPlayer mediaPlayer,
                                          int newScrambled) {
-                System.out.println("AudioPlayer.scrambledChanged");
-            }
+                            }
 
             @Override
             public void elementaryStreamAdded(MediaPlayer mediaPlayer,
                                               int type, int id) {
-                System.out.println("AudioPlayer.elementaryStreamAdded");
-            }
+                            }
 
             @Override
             public void elementaryStreamDeleted(MediaPlayer mediaPlayer,
                                                 int type, int id) {
-                System.out.println("AudioPlayer.elementaryStreamDeleted");
-            }
+                            }
 
             @Override
             public void elementaryStreamSelected(MediaPlayer mediaPlayer,
                                                  int type, int id) {
-                System.out.println("AudioPlayer.elementaryStreamSelected");
-            }
+                            }
         });
     }
 
